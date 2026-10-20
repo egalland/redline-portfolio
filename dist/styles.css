@@ -6,11 +6,6 @@ body { margin:0; color:var(--paper); background:var(--ink); font-family:"IBM Ple
 a { color:inherit; text-decoration:none; }
 #signal { position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:.48; pointer-events:none; }
 #motion-field { position:fixed; inset:0; width:100%; height:100%; z-index:12; pointer-events:none; opacity:.76; mix-blend-mode:screen; }
-.scroll-ribbon { position:fixed; inset:-18vh -12vw; width:124vw; height:136vh; z-index:0; pointer-events:none; opacity:.72; overflow:visible; mix-blend-mode:screen; will-change:transform; }
-.scroll-ribbon path { fill:none; stroke-linecap:round; stroke-linejoin:round; }
-.ribbon-shadow { stroke:#000; stroke-width:116; opacity:.8; transform:translate(14px,18px); }
-.ribbon-main { stroke:#ff3b0a; stroke-width:92; stroke-dasharray:240 18 520 10; }
-.ribbon-edge { stroke:#ff9a70; stroke-width:3; stroke-dasharray:8 18; }
 .vapor-layer { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; opacity:var(--vapor-opacity,.2); transition:opacity .35s; mix-blend-mode:screen; }
 .vapor-layer>span { position:absolute; right:22px; bottom:18px; color:#4ff7ff; font-size:7px; letter-spacing:.18em; writing-mode:vertical-rl; }
 .vapor-sun { position:absolute; left:67%; top:47%; width:min(29vw,410px); aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); background:repeating-linear-gradient(to bottom,transparent 0 8%,rgba(8,8,8,.92) 8.5% 11%),linear-gradient(#ff65d8 0 42%,#ff253b 67%,#ff9a18); filter:blur(.2px) drop-shadow(0 0 38px rgba(255,37,153,.42)); animation:vapor-sun 8s ease-in-out infinite; }
@@ -130,6 +125,10 @@ a { color:inherit; text-decoration:none; }
 .project:hover .project-arrow { transform:translate(5px,-5px); }
 .scene-shell { background:#080808; transform-style:preserve-3d; perspective:700px; }
 .project-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.kinetic-text { will-change:translate,text-shadow; animation:type-breathe 4.8s ease-in-out infinite; }
+.kinetic-block { will-change:translate; }
+.project-canvas { animation:canvas-breathe 7s ease-in-out infinite; transform-origin:center; }
+.project:nth-of-type(2) .project-canvas { animation-delay:-2.3s; }.project:nth-of-type(3) .project-canvas { animation-delay:-4.6s; }
 .scene-label { position:absolute; z-index:3; left:12px; bottom:10px; color:var(--paper); font-size:7px; letter-spacing:.12em; mix-blend-mode:difference; }
 .art-one { background:repeating-linear-gradient(90deg,#050505 0 8px,var(--red) 8px 12px); }
 .art-one i { position:absolute; border-radius:50%; background:var(--paper); mix-blend-mode:difference; animation:float 3s ease-in-out infinite alternate; }
@@ -168,6 +167,8 @@ a { color:inherit; text-decoration:none; }
 @keyframes vapor-sun { 0%,100%{transform:translate(-50%,-50%) scale(.96);filter:hue-rotate(0deg) drop-shadow(0 0 30px rgba(255,37,153,.35))} 50%{transform:translate(-50%,-53%) scale(1.035);filter:hue-rotate(13deg) drop-shadow(0 0 55px rgba(79,247,255,.48))} }
 @keyframes vapor-grid { to{background-position:0 38px,54px 0} }
 @keyframes mac-alert { 50%{color:#ff2436;transform:translateY(-2px)} }
+@keyframes type-breathe { 0%,100%{text-shadow:0 0 0 transparent} 50%{text-shadow:.018em 0 rgba(255,36,54,.28),-.012em 0 rgba(79,247,255,.18)} }
+@keyframes canvas-breathe { 0%,100%{transform:scale(1.01) rotate(-.18deg)} 50%{transform:scale(1.045) rotate(.22deg)} }
 @keyframes goose-hover { 0%,100%{transform:scaleX(var(--goose-flip,1)) translateY(-3px) rotate(-1deg)} 50%{transform:scaleX(var(--goose-flip,1)) translateY(5px) rotate(2deg)} }
 @keyframes idle-scan { 0%,58%{transform:translateX(-78%);opacity:0} 66%{opacity:.8} 82%{transform:translateX(78%);opacity:0} 100%{transform:translateX(78%);opacity:0} }
 @keyframes video-arrive { 0%{opacity:.05;transform:translate3d(0,48px,0) scale(.965);filter:blur(13px) contrast(2)} 34%{opacity:1;filter:blur(0) contrast(1.6)} 55%{transform:translate3d(-7px,0,0) scale(1.008)} 72%{transform:translate3d(4px,0,0) scale(.998)} 100%{transform:none;filter:none} }

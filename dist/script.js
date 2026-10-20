@@ -10,7 +10,6 @@ const retroMessage = document.querySelector('.mac-message');
 let w, h, mouse = { x: innerWidth / 2, y: innerHeight / 2 }, t = 0;
 let scrollVelocity = 0, lastScrollY = scrollY, gooseX = innerWidth * .06, gooseY = innerHeight * .74;
 let previousGooseX = gooseX, previousGooseY = gooseY, lastTrailTick = 0;
-let pageProgress = 0, ribbonImpulse = 0;
 let goosePose = {x:5,y:74,s:.58,r:-8};
 const gooseTrail = [];
 const motionMotes = Array.from({length:110},(_,i)=>({
@@ -58,15 +57,25 @@ function drawMotionField(time){
 function animateIdleScene(time){
   const breathe=Math.sin(time*.008), drift=Math.cos(time*.0045);
   const pointerX=mouse.x/innerWidth-.5,pointerY=mouse.y/innerHeight-.5;
-  scrollRibbon.style.transform=`translate3d(${Math.sin(pageProgress*7)*9+breathe*1.4}vw,${-pageProgress*24+drift*.7}vh,0) rotate(${pageProgress*9-5+ribbonImpulse*3+breathe*.7}deg) skewX(${ribbonImpulse*2.5}deg)`;
   retroMac.style.transform=`translate3d(${pointerX*13+breathe*5}px,${pointerY*9+drift*7}px,0) rotate(${breathe*.65}deg)`;
+  kineticText.forEach((el,i)=>{
+    const r=el.getBoundingClientRect();if(r.bottom<0||r.top>h)return;
+    const screen=(r.top+r.height*.5-h*.5)/h;
+    const x=Math.sin(time*.006+i*1.71)*(2.5+i%3*1.7)+pointerX*(i%2?3:-3);
+    const y=-screen*(5+i%4*2.2)+Math.cos(time*.0045+i)*3.5;
+    el.style.translate=`${x.toFixed(2)}px ${y.toFixed(2)}px`;
+  });
+  kineticBlocks.forEach((el,i)=>{
+    const r=el.getBoundingClientRect();if(r.bottom<0||r.top>h)return;
+    const screen=(r.top+r.height*.5-h*.5)/h;
+    el.style.translate=`${(Math.sin(time*.0038+i*2.1)*5+pointerX*4).toFixed(2)}px ${(-screen*(8+i%3*3)+Math.cos(time*.0032+i)*5).toFixed(2)}px`;
+  });
   const idleX=Math.sin(time*.006)*.7,idleY=Math.cos(time*.005)*.55,idleR=Math.sin(time*.004)*1.8;
   gooseGuide.style.transform=`translate3d(${goosePose.x+idleX}vw,${goosePose.y+idleY}vh,0) rotate(${goosePose.r+idleR}deg) scale(${goosePose.s*(1+Math.sin(time*.007)*.025)})`;
   const slowP=Math.pow(zoomProgress,1.55),mx=(mouse.x/innerWidth-.5),my=(mouse.y/innerHeight-.5);
   cosmicLayers.base.style.transform=`translate3d(${mx*-1.3+drift*.18}%,${my*-1.1+breathe*.16}%,0) scale(${1+slowP*2.8+breathe*.004})`;
   cosmicLayers.particles.style.transform=`translate3d(${mx*7+slowP*1.2+breathe*.7}%,${my*4+slowP*2.6+drift*.55}%,110px) scale(${1+slowP*5.6+breathe*.012}) rotate(${mx*1.4+drift*.3}deg)`;
   cosmicLayers.figure.style.transform=`translate3d(${mx*10-slowP*.7+breathe*.24}%,${my*6+slowP*4.2+drift*.18}%,170px) scale(${1+slowP*3.25+breathe*.006})`;
-  ribbonImpulse*=.91;
 }
 
 function draw(){
@@ -136,8 +145,6 @@ function fireFilmCut(target){
 const cutObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)fireFilmCut(entry.target)}),{threshold:.16});
 document.querySelectorAll('.hero,.manifesto,.project,.deepzoom,.contact').forEach(el=>cutObserver.observe(el));
 
-const scrollRibbon = document.querySelector('.scroll-ribbon');
-const ribbonPaths = document.querySelectorAll('.scroll-ribbon path');
 const gooseGuide = document.querySelector('.goose-guide');
 const guideLabel = document.querySelector('.guide-data span');
 const guidePercent = document.querySelector('.guide-data b');
@@ -151,6 +158,10 @@ const zoomHud = document.querySelector('.zoom-hud b');
 const cosmicCanvas = document.querySelector('.cosmic-particles');
 const cosmicCtx = cosmicCanvas.getContext('2d');
 let zoomProgress = 0;
+const kineticText=[...document.querySelectorAll('.glitch,.statement,.project h2,.project-no,.projects-head,.zoom-copy strong,.contact-link,.section-label')];
+const kineticBlocks=[...document.querySelectorAll('.retro-mac,.manifesto-meta,.project-art,.contact-bottom')];
+kineticText.forEach((el,i)=>{el.classList.add('kinetic-text');el.style.animationDelay=`${-i*.43}s`});
+kineticBlocks.forEach(el=>el.classList.add('kinetic-block'));
 
 function smoothstep(v){v=Math.max(0,Math.min(1,v));return v*v*(3-2*v)}
 function gooseRoute(){
@@ -175,15 +186,9 @@ function gooseRoute(){
 
 function animatePage(){
   const globalP = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
-  pageProgress=globalP;
   const vaporFade=Math.max(.035,Math.min(.3,(deepzoom.offsetTop-scrollY+innerHeight*.3)/innerHeight*.18));
   vaporLayer.style.setProperty('--vapor-opacity',vaporFade.toFixed(3));
   scrollVelocity += scrollY-lastScrollY; lastScrollY=scrollY;
-  const impulse=Math.max(-1,Math.min(1,scrollVelocity/120));
-  ribbonImpulse=impulse;
-  ribbonPaths.forEach((path,i)=>{
-    path.style.strokeDashoffset = `${-globalP * (900 + i * 180)}`;
-  });
 
   const route=gooseRoute();let a=route[0],b=route[route.length-1];
   for(let i=0;i<route.length-1;i++)if(globalP>=route[i].p&&globalP<=route[i+1].p){a=route[i];b=route[i+1];break}
