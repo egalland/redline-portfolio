@@ -1,8 +1,17 @@
 const canvas = document.querySelector('#signal');
 const ctx = canvas.getContext('2d');
+const motionCanvas = document.querySelector('#motion-field');
+const motionCtx = motionCanvas.getContext('2d');
 const cursor = document.querySelector('.cursor');
 const glitch = document.querySelector('.glitch');
 let w, h, mouse = { x: innerWidth / 2, y: innerHeight / 2 }, t = 0;
+let scrollVelocity = 0, lastScrollY = scrollY, gooseX = innerWidth * .06, gooseY = innerHeight * .74;
+let previousGooseX = gooseX, previousGooseY = gooseY, lastTrailTick = 0;
+const gooseTrail = [];
+const motionMotes = Array.from({length:110},(_,i)=>({
+  x:(Math.sin(i*73.17)*.5+.5), y:(Math.sin(i*41.63+1.7)*.5+.5),
+  z:.12+(i%13)/13, s:.35+(i%5)*.33, drift:.15+(i%7)*.055
+}));
 
 function resize(){
   const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -10,6 +19,35 @@ function resize(){
   canvas.width = w * dpr; canvas.height = h * dpr;
   canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
+  motionCanvas.width = w * dpr; motionCanvas.height = h * dpr;
+  motionCanvas.style.width = w + 'px'; motionCanvas.style.height = h + 'px';
+  motionCtx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function drawMotionField(time){
+  motionCtx.clearRect(0,0,w,h);
+  const energy=Math.min(1,Math.abs(scrollVelocity)/55);
+  motionMotes.forEach((p,i)=>{
+    let x=(p.x*w+time*p.drift+scrollY*p.z*.028)%(w+80)-40;
+    let y=(p.y*h+Math.sin(time*.006+i)*18*p.z-scrollY*p.z*.018)%(h+80);
+    if(y<0)y+=h+80;
+    const dx=x-mouse.x,dy=y-mouse.y,dist=Math.max(45,Math.hypot(dx,dy));
+    if(dist<180){x+=dx/dist*(180-dist)*.12;y+=dy/dist*(180-dist)*.12;}
+    const len=2+p.z*(8+energy*42), alpha=.08+p.z*.24+energy*.18;
+    motionCtx.strokeStyle=i%6===0?`rgba(255,36,54,${alpha})`:`rgba(238,234,224,${alpha*.58})`;
+    motionCtx.lineWidth=Math.max(.45,p.s*.55);
+    motionCtx.beginPath();motionCtx.moveTo(x,y);motionCtx.lineTo(x-scrollVelocity*.07*p.z,y+len);motionCtx.stroke();
+  });
+  gooseTrail.forEach(p=>{
+    p.life-=.018+energy*.012;
+    p.x-=scrollVelocity*.025*p.depth;
+    p.y+=Math.sin(time*.03+p.seed)*.18;
+    if(p.life<=0)return;
+    motionCtx.fillStyle=p.hot?`rgba(255,64,35,${p.life*.72})`:`rgba(255,220,151,${p.life*.58})`;
+    motionCtx.save();motionCtx.translate(p.x,p.y);motionCtx.rotate(p.seed+p.life);motionCtx.fillRect(-p.size/2,-p.size/2,p.size,p.size);motionCtx.restore();
+  });
+  for(let i=gooseTrail.length-1;i>=0;i--)if(gooseTrail[i].life<=0)gooseTrail.splice(i,1);
+  scrollVelocity*=.88;
 }
 
 function draw(){
@@ -32,6 +70,7 @@ function draw(){
   }
   drawProjectScenes(t);
   drawCosmicParticles(t);
+  drawMotionField(t);
   t++;
   requestAnimationFrame(draw);
 }
@@ -71,27 +110,52 @@ const cosmicCanvas = document.querySelector('.cosmic-particles');
 const cosmicCtx = cosmicCanvas.getContext('2d');
 let zoomProgress = 0;
 
+function smoothstep(v){v=Math.max(0,Math.min(1,v));return v*v*(3-2*v)}
+function gooseRoute(){
+  const projects=[...document.querySelectorAll('.project')];
+  const contact=document.querySelector('.contact');
+  const max=Math.max(1,document.body.scrollHeight-innerHeight);
+  const at=el=>Math.max(0,Math.min(1,(el.offsetTop-innerHeight*.42)/max));
+  const deepStart=at(deepzoom), deepSpan=Math.max(.01,(deepzoom.offsetHeight-innerHeight)/max);
+  return [
+    {p:0,x:5,y:74,s:.58,r:-8,o:.15,label:'SIGNAL DÉTECTÉ',mode:'scan'},
+    {p:at(document.querySelector('.manifesto')),x:76,y:18,s:.78,r:7,o:1,label:'IL SUIT LA LIGNE ROUGE',mode:'scan'},
+    {p:at(projects[0]),x:7,y:58,s:.84,r:-5,o:1,label:'FRAGMENT 01 · CAPTURÉ',mode:'collect'},
+    {p:at(projects[1]),x:75,y:24,s:.72,r:6,o:1,label:'FRAGMENT 02 · CAPTURÉ',mode:'collect'},
+    {p:at(projects[2]),x:14,y:68,s:.9,r:-8,o:1,label:'FRAGMENT 03 · CAPTURÉ',mode:'collect'},
+    {p:deepStart,x:42,y:72,s:.88,r:0,o:1,label:'L’ORIGINE APPELLE',mode:'approach'},
+    {p:deepStart+deepSpan*.34,x:57,y:43,s:.55,r:16,o:1,label:'ENTRÉE DANS L’IMAGE',mode:'approach'},
+    {p:deepStart+deepSpan*.73,x:50,y:25,s:.12,r:144,o:.08,label:'SIGNAL ABSORBÉ',mode:'vanish'},
+    {p:Math.min(.995,at(contact)),x:79,y:62,s:.7,r:-4,o:1,label:'TRANSMISSION TERMINÉE',mode:'return'},
+    {p:1,x:88,y:78,s:.62,r:5,o:.35,label:'À SUIVRE',mode:'return'}
+  ];
+}
+
 function animatePage(){
   const globalP = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
-  scrollRibbon.style.transform = `translate3d(${Math.sin(globalP * 7) * 9}vw,${-globalP * 24}vh,0) rotate(${globalP * 9 - 5}deg)`;
+  scrollVelocity += scrollY-lastScrollY; lastScrollY=scrollY;
+  const impulse=Math.max(-1,Math.min(1,scrollVelocity/120));
+  scrollRibbon.style.transform = `translate3d(${Math.sin(globalP * 7) * 9}vw,${-globalP * 24}vh,0) rotate(${globalP * 9 - 5 + impulse*3}deg) skewX(${impulse*2.5}deg)`;
   ribbonPaths.forEach((path,i)=>{
     path.style.strokeDashoffset = `${-globalP * (900 + i * 180)}`;
   });
 
-  const guideX = 3 + globalP * 78 + Math.sin(globalP * 24) * 8;
-  const guideY = 7 + globalP * 72 + Math.cos(globalP * 19) * 4;
-  const guideScale = .72 + Math.sin(globalP * Math.PI) * .42;
-  gooseGuide.style.transform = `translate3d(${guideX}vw,${guideY}vh,0) rotate(${Math.sin(globalP * 31) * 8}deg) scale(${guideScale})`;
-  gooseGuide.style.opacity = globalP > .965 ? 0 : 1;
+  const route=gooseRoute();let a=route[0],b=route[route.length-1];
+  for(let i=0;i<route.length-1;i++)if(globalP>=route[i].p&&globalP<=route[i+1].p){a=route[i];b=route[i+1];break}
+  const routeT=smoothstep((globalP-a.p)/Math.max(.0001,b.p-a.p));
+  const guideX=a.x+(b.x-a.x)*routeT, guideY=a.y+(b.y-a.y)*routeT;
+  const guideScale=a.s+(b.s-a.s)*routeT, guideRotate=a.r+(b.r-a.r)*routeT;
+  gooseGuide.style.transform = `translate3d(${guideX}vw,${guideY}vh,0) rotate(${guideRotate}deg) scale(${guideScale})`;
+  gooseGuide.style.opacity = a.o+(b.o-a.o)*routeT;
+  gooseGuide.dataset.story=routeT>.55?b.mode:a.mode;
+  gooseGuide.style.setProperty('--goose-flip',b.x<a.x?'-1':'1');
   gooseGuide.style.setProperty('--guide-progress',`${Math.round(globalP*100)}%`);
   guidePercent.textContent = `${Math.round(globalP*100)}%`;
-  const centerSection = [...document.querySelectorAll('main>section')].find(section=>{
-    const r=section.getBoundingClientRect(); return r.top<=innerHeight*.5 && r.bottom>=innerHeight*.5;
-  });
-  const guideNames={hero:'SIGNAL D’ENTRÉE',manifesto:'MANIFESTE',projects:'THREE WORLDS',deepzoom:'THE ORIGIN',contact:'END TRANSMISSION'};
-  if(centerSection){
-    const key=[...centerSection.classList].find(c=>guideNames[c]);
-    if(key) guideLabel.textContent=`SUBJECT 01 · ${guideNames[key]}`;
+  guideLabel.textContent=`SUBJECT 01 · ${routeT>.55?b.label:a.label}`;
+  previousGooseX=gooseX;previousGooseY=gooseY;gooseX=guideX/100*innerWidth+46*guideScale;gooseY=guideY/100*innerHeight+46*guideScale;
+  if(performance.now()-lastTrailTick>34&&Math.hypot(gooseX-previousGooseX,gooseY-previousGooseY)>.25){
+    lastTrailTick=performance.now();
+    for(let i=0;i<(a.mode==='collect'?4:2);i++)gooseTrail.push({x:gooseX+(Math.random()-.5)*20,y:gooseY+(Math.random()-.5)*18,life:1,size:1+Math.random()*3.5,depth:.5+Math.random(),seed:Math.random()*6,hot:i%3===0});
   }
 
   const zoomRect = deepzoom.getBoundingClientRect();
