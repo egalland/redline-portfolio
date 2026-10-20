@@ -11,6 +11,10 @@ a { color:inherit; text-decoration:none; }
 .ribbon-shadow { stroke:#000; stroke-width:116; opacity:.8; transform:translate(14px,18px); }
 .ribbon-main { stroke:#ff3b0a; stroke-width:92; stroke-dasharray:240 18 520 10; }
 .ribbon-edge { stroke:#ff9a70; stroke-width:3; stroke-dasharray:8 18; }
+.vapor-layer { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; opacity:var(--vapor-opacity,.2); transition:opacity .35s; mix-blend-mode:screen; }
+.vapor-layer>span { position:absolute; right:22px; bottom:18px; color:#4ff7ff; font-size:7px; letter-spacing:.18em; writing-mode:vertical-rl; }
+.vapor-sun { position:absolute; left:67%; top:47%; width:min(29vw,410px); aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); background:repeating-linear-gradient(to bottom,transparent 0 8%,rgba(8,8,8,.92) 8.5% 11%),linear-gradient(#ff65d8 0 42%,#ff253b 67%,#ff9a18); filter:blur(.2px) drop-shadow(0 0 38px rgba(255,37,153,.42)); animation:vapor-sun 8s ease-in-out infinite; }
+.vapor-grid { position:absolute; left:-18%; right:-18%; bottom:-39%; height:67%; transform:perspective(360px) rotateX(68deg); transform-origin:center top; background-image:linear-gradient(rgba(77,245,255,.42) 1px,transparent 1px),linear-gradient(90deg,rgba(255,45,196,.42) 1px,transparent 1px); background-size:54px 38px; -webkit-mask-image:linear-gradient(to bottom,transparent,#000 28%,#000); mask-image:linear-gradient(to bottom,transparent,#000 28%,#000); animation:vapor-grid 2.8s linear infinite; }
 .noise { position:fixed; inset:0; z-index:8; pointer-events:none; opacity:.07; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E"); }
 .cursor { position:fixed; z-index:20; width:18px; height:18px; border:1px solid var(--red); border-radius:50%; pointer-events:none; transform:translate(-50%,-50%); mix-blend-mode:difference; transition:width .18s,height .18s,background .18s; }
 .cursor.hot { width:74px; height:74px; background:var(--red); }
@@ -45,6 +49,15 @@ a { color:inherit; text-decoration:none; }
 .panel { position:relative; z-index:1; min-height:100vh; padding:84px 24px 28px; border-bottom:1px solid rgba(238,234,224,.2); }
 .panel::before { content:attr(data-index); position:absolute; right:24px; top:72px; color:var(--red); font-size:11px; }
 .hero { display:flex; flex-direction:column; justify-content:space-between; }
+.retro-mac { position:absolute; z-index:4; right:6vw; top:19vh; width:min(285px,29vw); color:#080808; background:#eeeae0; border:2px solid #080808; box-shadow:8px 8px 0 #ff2436,-5px -5px 0 #4ff7ff; font-family:"IBM Plex Mono",monospace; will-change:transform; }
+.mac-bar { height:27px; display:grid; grid-template-columns:22px 1fr 22px; align-items:center; gap:5px; padding:3px; border-bottom:2px solid #080808; background:repeating-linear-gradient(#eeeae0 0 2px,#080808 3px 4px); }
+.mac-bar b { justify-self:center; padding:2px 8px; background:#eeeae0; font-size:8px; letter-spacing:.1em; }
+.mac-bar i { width:17px; height:17px; background:#eeeae0; border:2px solid #080808; }
+.mac-body { padding:18px; display:grid; grid-template-columns:44px 1fr; gap:13px; align-items:center; }
+.mac-icon { width:39px; height:39px; display:grid; place-items:center; border:3px double #080808; font:bold 25px/1 serif; animation:mac-alert .85s steps(2) infinite; }
+.mac-message { margin:0; font-size:10px; line-height:1.35; letter-spacing:.04em; }
+.mac-buttons { grid-column:1/-1; display:flex; justify-content:flex-end; gap:8px; }
+.mac-buttons span,.mac-buttons strong { padding:5px 9px; border:1px solid #080808; font-size:8px; }.mac-buttons strong{box-shadow:inset 0 0 0 2px #eeeae0,0 0 0 2px #080808;}
 .eyebrow,.section-label { font-size:11px; letter-spacing:.1em; }
 .glitch { position:relative; margin:0 -0.04em; font:normal clamp(6rem,20vw,18rem)/.73 "Archivo Black",sans-serif; letter-spacing:-.09em; text-transform:uppercase; }
 .glitch::before,.glitch::after { content:attr(data-text); position:absolute; inset:0; pointer-events:none; overflow:hidden; opacity:0; }
@@ -152,6 +165,9 @@ a { color:inherit; text-decoration:none; }
 @keyframes float { to{transform:translate(24px,34px) scale(1.25)} }
 @keyframes spin { to{transform:rotate(360deg)} }
 @keyframes goose-dance { to{background-position:100% 0} }
+@keyframes vapor-sun { 0%,100%{transform:translate(-50%,-50%) scale(.96);filter:hue-rotate(0deg) drop-shadow(0 0 30px rgba(255,37,153,.35))} 50%{transform:translate(-50%,-53%) scale(1.035);filter:hue-rotate(13deg) drop-shadow(0 0 55px rgba(79,247,255,.48))} }
+@keyframes vapor-grid { to{background-position:0 38px,54px 0} }
+@keyframes mac-alert { 50%{color:#ff2436;transform:translateY(-2px)} }
 @keyframes goose-hover { 0%,100%{transform:scaleX(var(--goose-flip,1)) translateY(-3px) rotate(-1deg)} 50%{transform:scaleX(var(--goose-flip,1)) translateY(5px) rotate(2deg)} }
 @keyframes idle-scan { 0%,58%{transform:translateX(-78%);opacity:0} 66%{opacity:.8} 82%{transform:translateX(78%);opacity:0} 100%{transform:translateX(78%);opacity:0} }
 @keyframes video-arrive { 0%{opacity:.05;transform:translate3d(0,48px,0) scale(.965);filter:blur(13px) contrast(2)} 34%{opacity:1;filter:blur(0) contrast(1.6)} 55%{transform:translate3d(-7px,0,0) scale(1.008)} 72%{transform:translate3d(4px,0,0) scale(.998)} 100%{transform:none;filter:none} }
@@ -165,5 +181,5 @@ a { color:inherit; text-decoration:none; }
 @keyframes grain-shift { 0%{transform:translate(0)} 25%{transform:translate(3%,-2%)} 50%{transform:translate(-2%,3%)} 75%{transform:translate(1%,2%)} }
 @keyframes guide-orbit { to{transform:rotate(360deg)} }
 @keyframes guide-pulse { from{transform:scale(.5);opacity:.34} to{transform:scale(2.3);opacity:0} }
-@media (max-width:760px){ body{cursor:auto}.cursor{display:none}.topbar{grid-template-columns:1fr 1fr}.topbar .status{display:none}.panel{padding:72px 16px 20px}.glitch{font-size:22vw}.hero-bottom{grid-template-columns:1fr}.scroll-hint{justify-self:start}.statement{font-size:15vw}.statement span{transform:none}.manifesto-meta{margin-left:0;grid-template-columns:1fr}.goose-guide{width:68px}.goose-guide span{display:none}.interlude{min-height:300vh;padding:0}.curtain{width:17%}.cinema-frame{width:88vw}.interlude-copy{inset:70px 16px auto}.interlude-title{inset:auto 16px 20px;grid-template-columns:1fr}.interlude-title strong{text-align:left;font-size:11vw}.interlude-title span:last-child{text-align:left}.shot-progress{display:none}.project{min-height:48vh;grid-template-columns:34px 1fr 28px}.project-art{position:absolute;inset:12% 9% 12% 45%;height:auto;opacity:.55}.project h2{font-size:15vw}.project-arrow{grid-column:3}.deepzoom{min-height:420vh}.zoom-copy strong{font-size:20vw}.zoom-copy p{padding:0 24px}.contact-link{font-size:19vw}.contact-bottom{gap:24px}}
+@media (max-width:760px){ body{cursor:auto}.cursor{display:none}.topbar{grid-template-columns:1fr 1fr}.topbar .status{display:none}.panel{padding:72px 16px 20px}.glitch{font-size:22vw}.hero-bottom{grid-template-columns:1fr}.scroll-hint{justify-self:start}.statement{font-size:15vw}.statement span{transform:none}.manifesto-meta{margin-left:0;grid-template-columns:1fr}.retro-mac{top:20vh;right:7vw;width:58vw}.mac-body{padding:11px;grid-template-columns:32px 1fr}.mac-icon{width:30px;height:30px;font-size:19px}.vapor-sun{left:72%;top:42%;width:58vw}.goose-guide{width:68px}.goose-guide span{display:none}.interlude{min-height:300vh;padding:0}.curtain{width:17%}.cinema-frame{width:88vw}.interlude-copy{inset:70px 16px auto}.interlude-title{inset:auto 16px 20px;grid-template-columns:1fr}.interlude-title strong{text-align:left;font-size:11vw}.interlude-title span:last-child{text-align:left}.shot-progress{display:none}.project{min-height:48vh;grid-template-columns:34px 1fr 28px}.project-art{position:absolute;inset:12% 9% 12% 45%;height:auto;opacity:.55}.project h2{font-size:15vw}.project-arrow{grid-column:3}.deepzoom{min-height:420vh}.zoom-copy strong{font-size:20vw}.zoom-copy p{padding:0 24px}.contact-link{font-size:19vw}.contact-bottom{gap:24px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}.cursor{display:none}body{cursor:auto}}

@@ -4,6 +4,9 @@ const motionCanvas = document.querySelector('#motion-field');
 const motionCtx = motionCanvas.getContext('2d');
 const cursor = document.querySelector('.cursor');
 const glitch = document.querySelector('.glitch');
+const vaporLayer = document.querySelector('.vapor-layer');
+const retroMac = document.querySelector('.retro-mac');
+const retroMessage = document.querySelector('.mac-message');
 let w, h, mouse = { x: innerWidth / 2, y: innerHeight / 2 }, t = 0;
 let scrollVelocity = 0, lastScrollY = scrollY, gooseX = innerWidth * .06, gooseY = innerHeight * .74;
 let previousGooseX = gooseX, previousGooseY = gooseY, lastTrailTick = 0;
@@ -54,7 +57,9 @@ function drawMotionField(time){
 
 function animateIdleScene(time){
   const breathe=Math.sin(time*.008), drift=Math.cos(time*.0045);
+  const pointerX=mouse.x/innerWidth-.5,pointerY=mouse.y/innerHeight-.5;
   scrollRibbon.style.transform=`translate3d(${Math.sin(pageProgress*7)*9+breathe*1.4}vw,${-pageProgress*24+drift*.7}vh,0) rotate(${pageProgress*9-5+ribbonImpulse*3+breathe*.7}deg) skewX(${ribbonImpulse*2.5}deg)`;
+  retroMac.style.transform=`translate3d(${pointerX*13+breathe*5}px,${pointerY*9+drift*7}px,0) rotate(${breathe*.65}deg)`;
   const idleX=Math.sin(time*.006)*.7,idleY=Math.cos(time*.005)*.55,idleR=Math.sin(time*.004)*1.8;
   gooseGuide.style.transform=`translate3d(${goosePose.x+idleX}vw,${goosePose.y+idleY}vh,0) rotate(${goosePose.r+idleR}deg) scale(${goosePose.s*(1+Math.sin(time*.007)*.025)})`;
   const slowP=Math.pow(zoomProgress,1.55),mx=(mouse.x/innerWidth-.5),my=(mouse.y/innerHeight-.5);
@@ -117,9 +122,11 @@ function fireFilmCut(target){
   const now=performance.now();if(target===lastCutTarget||now-lastCutAt<520)return;
   lastCutTarget=target;lastCutAt=now;cutFrame++;
   const names=['SIGNAL','MANIFESTE','FRAGMENT 01','FRAGMENT 02','FRAGMENT 03','ORIGIN','CONTACT'];
+  const messages=['A GOOSE HAS ENTERED YOUR SYSTEM.','REALITY FILE IS CORRUPTED.','FRAGMENT 01 COPIED TO MEMORY.','FRAGMENT 02 REFUSES TO QUIT.','FRAGMENT 03 IS DREAMING.','THE ORIGIN HAS NO DESKTOP.','IT IS NOW SAFE TO WAKE UP.'];
   const targets=[document.querySelector('.hero'),document.querySelector('.manifesto'),...document.querySelectorAll('.project'),document.querySelector('.deepzoom'),document.querySelector('.contact')];
   const index=Math.max(0,targets.indexOf(target));
   filmCutLabel.textContent=`SCENE ${String(index).padStart(2,'0')} · ${names[index]}`;
+  retroMessage.textContent=messages[index];
   filmCutCode.textContent=`00:00:${String(cutFrame*3).padStart(2,'0')}:${String((cutFrame*7)%24).padStart(2,'0')}`;
   const arrivalTarget=target.classList.contains('deepzoom')?target.querySelector('.deepzoom-sticky'):target;
   filmCut.classList.remove('fire');arrivalTarget.classList.remove('video-arrive');void filmCut.offsetWidth;
@@ -169,6 +176,8 @@ function gooseRoute(){
 function animatePage(){
   const globalP = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
   pageProgress=globalP;
+  const vaporFade=Math.max(.035,Math.min(.3,(deepzoom.offsetTop-scrollY+innerHeight*.3)/innerHeight*.18));
+  vaporLayer.style.setProperty('--vapor-opacity',vaporFade.toFixed(3));
   scrollVelocity += scrollY-lastScrollY; lastScrollY=scrollY;
   const impulse=Math.max(-1,Math.min(1,scrollVelocity/120));
   ribbonImpulse=impulse;
