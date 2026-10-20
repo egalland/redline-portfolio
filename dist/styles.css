@@ -109,11 +109,10 @@ a { color:inherit; text-decoration:none; }
 .deepzoom-sticky { position:sticky; top:0; height:100vh; overflow:hidden; background:#030303; isolation:isolate; }
 .cosmic-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform-origin:52% 27%; will-change:transform,filter,opacity; }
 .cosmic-layers { position:absolute; inset:0; overflow:hidden; perspective:1200px; background:#020202; }
-.cosmic-layer { position:absolute; inset:-3%; width:106%; height:106%; object-fit:cover; transform-origin:52% 27%; will-change:transform,filter,opacity; pointer-events:none; }
-.layer-base { filter:contrast(1.06) brightness(.88); }
-.layer-architecture { -webkit-mask:linear-gradient(90deg,#000 0 24%,transparent 34% 67%,#000 77% 100%); mask:linear-gradient(90deg,#000 0 24%,transparent 34% 67%,#000 77% 100%); opacity:.8; mix-blend-mode:screen; }
-.layer-core { clip-path:circle(39% at 52% 34%); filter:contrast(1.18) saturate(1.14); }
-.layer-figure { clip-path:polygon(45% 43%,55% 43%,58% 92%,42% 92%); filter:contrast(1.3) brightness(.82); }
+.cosmic-layer { position:absolute; inset:-3%; width:106%; height:106%; object-fit:cover; transform-origin:50% 29%; will-change:transform,filter,opacity; pointer-events:none; }
+.layer-base { z-index:0; filter:contrast(1.06) brightness(.88); }
+.layer-particles { z-index:2; object-fit:cover; mix-blend-mode:screen; filter:saturate(.88) contrast(1.05); }
+.layer-figure { z-index:4; object-fit:cover; filter:contrast(1.18) brightness(.9); }
 .cosmic-particles { position:absolute; inset:0; width:100%; height:100%; z-index:5; mix-blend-mode:screen; pointer-events:none; }
 .zoom-grain { position:absolute; inset:-20%; z-index:4; pointer-events:none; opacity:.19; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E"); animation:grain-shift .16s steps(2) infinite; mix-blend-mode:screen; }
 .zoom-blast { position:absolute; z-index:3; left:52%; top:27%; width:18vmin; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%) scale(var(--blast-scale,.1)); opacity:var(--blast-opacity,0); background:radial-gradient(circle,#fff 0 2%,#ffe2a1 7%,#c46c17 19%,rgba(119,36,4,.5) 35%,transparent 68%); filter:blur(4px); mix-blend-mode:screen; will-change:transform,opacity; }

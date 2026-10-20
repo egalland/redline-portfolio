@@ -63,8 +63,7 @@ const guidePercent = document.querySelector('.guide-data b');
 const deepzoom = document.querySelector('.deepzoom');
 const cosmicLayers = {
   base:document.querySelector('.layer-base'),
-  architecture:document.querySelector('.layer-architecture'),
-  core:document.querySelector('.layer-core'),
+  particles:document.querySelector('.layer-particles'),
   figure:document.querySelector('.layer-figure')
 };
 const zoomHud = document.querySelector('.zoom-hud b');
@@ -102,11 +101,12 @@ function animatePage(){
   const imageScale = 1 + slowP * 6.2;
   const mx=(mouse.x/innerWidth-.5), my=(mouse.y/innerHeight-.5);
   const darken=Math.max(.08,1-Math.max(0,zoomP-.72)*3.2);
-  cosmicLayers.base.style.transform=`translate3d(${mx*-1.5}%,${my*-1.2}%,0) scale(${1+slowP*2.7})`;
-  cosmicLayers.architecture.style.transform=`translate3d(${mx*-5-slowP*2}%,${my*-3+slowP*2}%,55px) scale(${1+slowP*3.5})`;
-  cosmicLayers.core.style.transform=`translate3d(${mx*7+slowP*1.5}%,${my*5+slowP*3}%,110px) scale(${1+slowP*5.8})`;
-  cosmicLayers.figure.style.transform=`translate3d(${mx*12-slowP*1}%,${my*7+slowP*5}%,170px) scale(${1+slowP*3.1})`;
-  Object.values(cosmicLayers).forEach(layer=>layer.style.filter=`contrast(${1.05+zoomP*.45}) brightness(${darken}) saturate(${1-zoomP*.25})`);
+  cosmicLayers.base.style.transform=`translate3d(${mx*-1.3}%,${my*-1.1}%,0) scale(${1+slowP*2.8})`;
+  cosmicLayers.particles.style.transform=`translate3d(${mx*7+slowP*1.2}%,${my*4+slowP*2.6}%,110px) scale(${1+slowP*5.6}) rotate(${mx*1.4}deg)`;
+  cosmicLayers.figure.style.transform=`translate3d(${mx*10-slowP*.7}%,${my*6+slowP*4.2}%,170px) scale(${1+slowP*3.25})`;
+  cosmicLayers.base.style.filter=`contrast(${1.06+zoomP*.35}) brightness(${darken}) saturate(${1-zoomP*.28})`;
+  cosmicLayers.particles.style.filter=`contrast(${1.05+zoomP*.55}) brightness(${darken}) saturate(${.88-zoomP*.18})`;
+  cosmicLayers.figure.style.filter=`contrast(${1.18+zoomP*.42}) brightness(${darken*.9})`;
   zoomHud.textContent = imageScale.toFixed(2);
   deepzoom.style.setProperty('--blast-scale', `${.1 + Math.pow(zoomP,3) * 26}`);
   deepzoom.style.setProperty('--blast-opacity', `${Math.max(0,Math.min(.9,(zoomP-.38)*2.2)) * (1-Math.max(0,(zoomP-.82)*5))}`);
