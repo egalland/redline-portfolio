@@ -59,6 +59,10 @@ const curtainRight = document.querySelector('.curtain-right');
 const flash = document.querySelector('.film-flash');
 const frameCounter = document.querySelector('.frame-caption b');
 const scrollRibbon = document.querySelector('.scroll-ribbon');
+const gooseGuide = document.querySelector('.goose-guide');
+const deepzoom = document.querySelector('.deepzoom');
+const cosmicImage = document.querySelector('.cosmic-image');
+const zoomHud = document.querySelector('.zoom-hud b');
 let lastShot = 0;
 function animateInterlude(){
   const rect = interlude.getBoundingClientRect();
@@ -83,6 +87,25 @@ function animateInterlude(){
   document.querySelectorAll('.scroll-ribbon path').forEach((path,i)=>{
     path.style.strokeDashoffset = `${-globalP * (900 + i * 180)}`;
   });
+
+  const guideX = 3 + globalP * 78 + Math.sin(globalP * 24) * 9;
+  const guideY = 7 + globalP * 72 + Math.cos(globalP * 19) * 5;
+  const guideScale = .72 + Math.sin(globalP * Math.PI) * .42;
+  gooseGuide.style.transform = `translate3d(${guideX}vw,${guideY}vh,0) rotate(${Math.sin(globalP * 31) * 8}deg) scale(${guideScale})`;
+  gooseGuide.style.opacity = globalP > .965 ? 0 : 1;
+
+  const zoomRect = deepzoom.getBoundingClientRect();
+  const zoomP = Math.max(0, Math.min(1, -zoomRect.top / Math.max(1, zoomRect.height - innerHeight)));
+  const slowP = Math.pow(zoomP, 1.55);
+  const imageScale = 1 + slowP * 12;
+  cosmicImage.style.transform = `scale(${imageScale}) translate3d(${slowP * -1.1}%,${slowP * 3.2}%,0)`;
+  cosmicImage.style.filter = `contrast(${1 + zoomP * .55}) brightness(${1 - Math.max(0,zoomP-.68) * 2.7}) saturate(${1 - zoomP * .35})`;
+  zoomHud.textContent = imageScale.toFixed(2);
+  deepzoom.style.setProperty('--blast-scale', `${.1 + Math.pow(zoomP,3) * 26}`);
+  deepzoom.style.setProperty('--blast-opacity', `${Math.max(0,Math.min(.9,(zoomP-.38)*2.2)) * (1-Math.max(0,(zoomP-.82)*5))}`);
+  deepzoom.style.setProperty('--zoom-copy', `${Math.max(0,Math.min(1,(zoomP-.78)*5))}`);
+  deepzoom.style.setProperty('--copy-scale', `${.82 + Math.max(0,(zoomP-.78)*.82)}`);
+  deepzoom.style.setProperty('--portrait-note', `${zoomP < .22 ? .55 : Math.max(0,.55-zoomP)}`);
 }
 addEventListener('scroll', animateInterlude, {passive:true});
 animateInterlude();
