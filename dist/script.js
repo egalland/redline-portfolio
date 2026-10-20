@@ -52,4 +52,20 @@ const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
   ],{duration:750,easing:'cubic-bezier(.16,1,.3,1)',fill:'both'});
 }),{threshold:.18});
 document.querySelectorAll('.project,.statement,.manifesto-meta').forEach(el=>observer.observe(el));
+
+const interlude = document.querySelector('.interlude');
+const gooseStage = document.querySelector('.goose-stage');
+const curtainLeft = document.querySelector('.curtain-left');
+const curtainRight = document.querySelector('.curtain-right');
+function animateInterlude(){
+  const rect = interlude.getBoundingClientRect();
+  const progress = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - innerHeight)));
+  const open = Math.sin(progress * Math.PI);
+  curtainLeft.style.transform = `translateX(${-open * 72}%)`;
+  curtainRight.style.transform = `translateX(${open * 72}%)`;
+  gooseStage.style.transform = `rotate(${(progress - .5) * 8}deg) scale(${.78 + open * .28})`;
+  gooseStage.style.filter = `blur(${Math.abs(progress - .5) * 3}px)`;
+}
+addEventListener('scroll', animateInterlude, {passive:true});
+animateInterlude();
 resize(); draw();
