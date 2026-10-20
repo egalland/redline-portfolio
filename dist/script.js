@@ -54,17 +54,35 @@ const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
 document.querySelectorAll('.project,.statement,.manifesto-meta').forEach(el=>observer.observe(el));
 
 const interlude = document.querySelector('.interlude');
-const gooseStage = document.querySelector('.goose-stage');
 const curtainLeft = document.querySelector('.curtain-left');
 const curtainRight = document.querySelector('.curtain-right');
+const flash = document.querySelector('.film-flash');
+const frameCounter = document.querySelector('.frame-caption b');
+const scrollRibbon = document.querySelector('.scroll-ribbon');
+let lastShot = 0;
 function animateInterlude(){
   const rect = interlude.getBoundingClientRect();
   const progress = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - innerHeight)));
-  const open = Math.sin(progress * Math.PI);
-  curtainLeft.style.transform = `translateX(${-open * 72}%)`;
-  curtainRight.style.transform = `translateX(${open * 72}%)`;
-  gooseStage.style.transform = `rotate(${(progress - .5) * 8}deg) scale(${.78 + open * .28})`;
-  gooseStage.style.filter = `blur(${Math.abs(progress - .5) * 3}px)`;
+  const shot = progress < .17 ? 0 : progress < .37 ? 1 : progress < .59 ? 2 : progress < .81 ? 3 : 4;
+  const open = Math.min(1, progress * 5);
+  interlude.dataset.shot = shot;
+  interlude.style.setProperty('--interlude-p', progress.toFixed(3));
+  interlude.style.setProperty('--spiral-rotate', `${-18 + progress * 28}deg`);
+  interlude.style.setProperty('--shot', shot);
+  curtainLeft.style.transform = `translateX(${-open * 102}%)`;
+  curtainRight.style.transform = `translateX(${open * 102}%)`;
+  frameCounter.textContent = String(Math.round(progress * 96)).padStart(2,'0');
+  if(shot !== lastShot){
+    flash.classList.remove('fire');
+    void flash.offsetWidth;
+    flash.classList.add('fire');
+    lastShot = shot;
+  }
+  const globalP = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
+  scrollRibbon.style.transform = `translate3d(${Math.sin(globalP * 7) * 9}vw,${-globalP * 24}vh,0) rotate(${globalP * 9 - 5}deg)`;
+  document.querySelectorAll('.scroll-ribbon path').forEach((path,i)=>{
+    path.style.strokeDashoffset = `${-globalP * (900 + i * 180)}`;
+  });
 }
 addEventListener('scroll', animateInterlude, {passive:true});
 animateInterlude();

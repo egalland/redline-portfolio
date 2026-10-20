@@ -13,6 +13,11 @@
 </head>
 <body>
   <canvas id="signal" aria-hidden="true"></canvas>
+  <svg class="scroll-ribbon" viewBox="0 0 1000 1600" preserveAspectRatio="none" aria-hidden="true">
+    <path class="ribbon-shadow" d="M-180 90 C 920 260, 80 520, 1120 690 S 40 1080, 1180 1480" />
+    <path class="ribbon-main" d="M-180 90 C 920 260, 80 520, 1120 690 S 40 1080, 1180 1480" />
+    <path class="ribbon-edge" d="M-180 90 C 920 260, 80 520, 1120 690 S 40 1080, 1180 1480" />
+  </svg>
   <div class="noise" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"></div>
 
@@ -41,24 +46,44 @@
       </div>
     </section>
 
-    <section class="interlude panel" data-index="01½" aria-label="Interlude animé">
-      <div class="curtain curtain-left" aria-hidden="true"></div>
-      <div class="curtain curtain-right" aria-hidden="true"></div>
-      <div class="interlude-copy">
-        <p>PLEASE STAND BY</p>
-        <p>THE WHITE ROOM<br>IS NOW OPEN</p>
+    <section class="interlude panel" data-index="01½" data-shot="0" aria-label="Interlude animé">
+      <div class="cinema-sticky">
+        <div class="spiral-motion" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="curtain curtain-left" aria-hidden="true"></div>
+        <div class="curtain curtain-right" aria-hidden="true"></div>
+        <div class="film-flash" aria-hidden="true"></div>
+
+        <div class="interlude-copy">
+          <p>PICTURE START · 24 FPS</p>
+          <p>THE WHITE ROOM<br>SEQUENCE 01—05</p>
+        </div>
+
+        <div class="cinema-frame" aria-hidden="true">
+          <div class="frame-noise"></div>
+          <div class="goose-film goose-main"></div>
+          <div class="goose-film goose-left"></div>
+          <div class="goose-film goose-right"></div>
+          <div class="focus-ring"></div>
+          <div class="frame-caption"><span>CAM A</span><span>REC ●</span><span>00:<b>00</b>:14</span></div>
+        </div>
+
+        <div class="cut-card" aria-hidden="true">
+          <small>INTERMISSION / 01½</small>
+          <strong>FOWL<br>PLAY</strong>
+          <small>KEEP SCROLLING</small>
+        </div>
+
+        <div class="shot-progress" aria-hidden="true">
+          <span>WIDE</span><span>CLOSE</span><span>TRIPLE</span><span>RED</span><span>EXIT</span>
+          <i></i>
+        </div>
+
+        <div class="interlude-title">
+          <span>AN INTERMISSION</span>
+          <strong>THE DANCING<br>GOOSE</strong>
+          <span>NO SIGNAL / KEEP MOVING</span>
+        </div>
       </div>
-      <div class="goose-stage" aria-hidden="true">
-        <div class="goose-echo echo-a"></div>
-        <div class="goose-sprite"></div>
-        <div class="goose-echo echo-b"></div>
-      </div>
-      <div class="interlude-title">
-        <span>AN INTERMISSION</span>
-        <strong>FOWL<br>PLAY</strong>
-        <span>NO SIGNAL / KEEP MOVING</span>
-      </div>
-      <div class="red-floor" aria-hidden="true"></div>
     </section>
 
     <section class="projects panel" data-index="02">
