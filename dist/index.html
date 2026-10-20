@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
+  <title>REDLINE — Portfolio concept</title>
+  <meta name="description" content="Prototype de portfolio brutaliste et expérimental, noir et rouge.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="signal" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="mark" href="#top">R/01</a>
+    <div class="status"><span></span> SIGNAL ACTIF</div>
+    <a href="mailto:hello@example.com">CONTACT ↗</a>
+  </header>
+
+  <main id="top">
+    <section class="hero panel" data-index="00">
+      <p class="eyebrow">DIRECTION ARTISTIQUE · CREATIVE DEVELOPMENT · PARIS</p>
+      <h1 class="glitch" data-text="TON NOM">TON NOM</h1>
+      <div class="hero-bottom">
+        <p>Je fabrique des identités et des expériences numériques qui refusent de rester immobiles.</p>
+        <p class="scroll-hint">DÉFILER POUR<br>ENTRER DANS LE SIGNAL ↓</p>
+      </div>
+    </section>
+
+    <section class="manifesto panel" data-index="01">
+      <p class="section-label">MANIFESTE</p>
+      <p class="statement reveal">PAS UN SITE.<br><span>UNE TRANSMISSION.</span></p>
+      <div class="manifesto-meta">
+        <p>Une sélection courte. Trois projets. Zéro remplissage.</p>
+        <p>Design, code, mouvement — réunis dans une même tension visuelle.</p>
+      </div>
+    </section>
+
+    <section class="projects panel" data-index="02">
+      <div class="projects-head">
+        <p class="section-label">PROJETS SÉLECTIONNÉS</p>
+        <p>2024—2026</p>
+      </div>
+
+      <article class="project" data-color="#ff2436">
+        <div class="project-no">01</div>
+        <div>
+          <h2>NULL<br>OBJECT</h2>
+          <p>IDENTITÉ · WEB · MOTION</p>
+        </div>
+        <div class="project-art art-one"><i></i><i></i><i></i></div>
+        <div class="project-arrow">↗</div>
+      </article>
+
+      <article class="project" data-color="#ef3c16">
+        <div class="project-no">02</div>
+        <div>
+          <h2>AFTER<br>IMAGE</h2>
+          <p>CAMPAGNE · FILM · EXPÉRIENCE</p>
+        </div>
+        <div class="project-art art-two"><i></i></div>
+        <div class="project-arrow">↗</div>
+      </article>
+
+      <article class="project" data-color="#ff003c">
+        <div class="project-no">03</div>
+        <div>
+          <h2>RAW<br>SIGNAL</h2>
+          <p>ART DIRECTION · WEBGL</p>
+        </div>
+        <div class="project-art art-three"><i></i></div>
+        <div class="project-arrow">↗</div>
+      </article>
+    </section>
+
+    <section class="contact panel" data-index="03">
+      <p class="section-label">FIN DE TRANSMISSION</p>
+      <a class="contact-link" href="mailto:hello@example.com">PARLONS<span>↗</span></a>
+      <div class="contact-bottom">
+        <p>DISPONIBLE POUR COLLABORATIONS<br>ET PROJETS SÉLECTIFS</p>
+        <p>PARIS / REMOTE<br>2026</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
