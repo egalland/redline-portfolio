@@ -7,6 +7,8 @@ const glitch = document.querySelector('.glitch');
 let w, h, mouse = { x: innerWidth / 2, y: innerHeight / 2 }, t = 0;
 let scrollVelocity = 0, lastScrollY = scrollY, gooseX = innerWidth * .06, gooseY = innerHeight * .74;
 let previousGooseX = gooseX, previousGooseY = gooseY, lastTrailTick = 0;
+let pageProgress = 0, ribbonImpulse = 0;
+let goosePose = {x:5,y:74,s:.58,r:-8};
 const gooseTrail = [];
 const motionMotes = Array.from({length:110},(_,i)=>({
   x:(Math.sin(i*73.17)*.5+.5), y:(Math.sin(i*41.63+1.7)*.5+.5),
@@ -50,6 +52,18 @@ function drawMotionField(time){
   scrollVelocity*=.88;
 }
 
+function animateIdleScene(time){
+  const breathe=Math.sin(time*.008), drift=Math.cos(time*.0045);
+  scrollRibbon.style.transform=`translate3d(${Math.sin(pageProgress*7)*9+breathe*1.4}vw,${-pageProgress*24+drift*.7}vh,0) rotate(${pageProgress*9-5+ribbonImpulse*3+breathe*.7}deg) skewX(${ribbonImpulse*2.5}deg)`;
+  const idleX=Math.sin(time*.006)*.7,idleY=Math.cos(time*.005)*.55,idleR=Math.sin(time*.004)*1.8;
+  gooseGuide.style.transform=`translate3d(${goosePose.x+idleX}vw,${goosePose.y+idleY}vh,0) rotate(${goosePose.r+idleR}deg) scale(${goosePose.s*(1+Math.sin(time*.007)*.025)})`;
+  const slowP=Math.pow(zoomProgress,1.55),mx=(mouse.x/innerWidth-.5),my=(mouse.y/innerHeight-.5);
+  cosmicLayers.base.style.transform=`translate3d(${mx*-1.3+drift*.18}%,${my*-1.1+breathe*.16}%,0) scale(${1+slowP*2.8+breathe*.004})`;
+  cosmicLayers.particles.style.transform=`translate3d(${mx*7+slowP*1.2+breathe*.7}%,${my*4+slowP*2.6+drift*.55}%,110px) scale(${1+slowP*5.6+breathe*.012}) rotate(${mx*1.4+drift*.3}deg)`;
+  cosmicLayers.figure.style.transform=`translate3d(${mx*10-slowP*.7+breathe*.24}%,${my*6+slowP*4.2+drift*.18}%,170px) scale(${1+slowP*3.25+breathe*.006})`;
+  ribbonImpulse*=.91;
+}
+
 function draw(){
   ctx.clearRect(0,0,w,h);
   const page = scrollY / Math.max(1, document.body.scrollHeight - h);
@@ -71,6 +85,7 @@ function draw(){
   drawProjectScenes(t);
   drawCosmicParticles(t);
   drawMotionField(t);
+  animateIdleScene(t);
   t++;
   requestAnimationFrame(draw);
 }
@@ -93,6 +108,26 @@ const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
   ],{duration:750,easing:'cubic-bezier(.16,1,.3,1)',fill:'both'});
 }),{threshold:.18});
 document.querySelectorAll('.project,.statement,.manifesto-meta').forEach(el=>observer.observe(el));
+
+const filmCut=document.querySelector('.film-cut');
+const filmCutLabel=filmCut.querySelector('b');
+const filmCutCode=filmCut.querySelector('span');
+let lastCutTarget=null,lastCutAt=0,cutFrame=0;
+function fireFilmCut(target){
+  const now=performance.now();if(target===lastCutTarget||now-lastCutAt<520)return;
+  lastCutTarget=target;lastCutAt=now;cutFrame++;
+  const names=['SIGNAL','MANIFESTE','FRAGMENT 01','FRAGMENT 02','FRAGMENT 03','ORIGIN','CONTACT'];
+  const targets=[document.querySelector('.hero'),document.querySelector('.manifesto'),...document.querySelectorAll('.project'),document.querySelector('.deepzoom'),document.querySelector('.contact')];
+  const index=Math.max(0,targets.indexOf(target));
+  filmCutLabel.textContent=`SCENE ${String(index).padStart(2,'0')} · ${names[index]}`;
+  filmCutCode.textContent=`00:00:${String(cutFrame*3).padStart(2,'0')}:${String((cutFrame*7)%24).padStart(2,'0')}`;
+  const arrivalTarget=target.classList.contains('deepzoom')?target.querySelector('.deepzoom-sticky'):target;
+  filmCut.classList.remove('fire');arrivalTarget.classList.remove('video-arrive');void filmCut.offsetWidth;
+  filmCut.classList.add('fire');arrivalTarget.classList.add('video-arrive');
+  setTimeout(()=>filmCut.classList.remove('fire'),880);
+}
+const cutObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)fireFilmCut(entry.target)}),{threshold:.16});
+document.querySelectorAll('.hero,.manifesto,.project,.deepzoom,.contact').forEach(el=>cutObserver.observe(el));
 
 const scrollRibbon = document.querySelector('.scroll-ribbon');
 const ribbonPaths = document.querySelectorAll('.scroll-ribbon path');
@@ -133,9 +168,10 @@ function gooseRoute(){
 
 function animatePage(){
   const globalP = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
+  pageProgress=globalP;
   scrollVelocity += scrollY-lastScrollY; lastScrollY=scrollY;
   const impulse=Math.max(-1,Math.min(1,scrollVelocity/120));
-  scrollRibbon.style.transform = `translate3d(${Math.sin(globalP * 7) * 9}vw,${-globalP * 24}vh,0) rotate(${globalP * 9 - 5 + impulse*3}deg) skewX(${impulse*2.5}deg)`;
+  ribbonImpulse=impulse;
   ribbonPaths.forEach((path,i)=>{
     path.style.strokeDashoffset = `${-globalP * (900 + i * 180)}`;
   });
@@ -145,7 +181,7 @@ function animatePage(){
   const routeT=smoothstep((globalP-a.p)/Math.max(.0001,b.p-a.p));
   const guideX=a.x+(b.x-a.x)*routeT, guideY=a.y+(b.y-a.y)*routeT;
   const guideScale=a.s+(b.s-a.s)*routeT, guideRotate=a.r+(b.r-a.r)*routeT;
-  gooseGuide.style.transform = `translate3d(${guideX}vw,${guideY}vh,0) rotate(${guideRotate}deg) scale(${guideScale})`;
+  goosePose={x:guideX,y:guideY,s:guideScale,r:guideRotate};
   gooseGuide.style.opacity = a.o+(b.o-a.o)*routeT;
   gooseGuide.dataset.story=routeT>.55?b.mode:a.mode;
   gooseGuide.style.setProperty('--goose-flip',b.x<a.x?'-1':'1');
@@ -165,9 +201,6 @@ function animatePage(){
   const imageScale = 1 + slowP * 6.2;
   const mx=(mouse.x/innerWidth-.5), my=(mouse.y/innerHeight-.5);
   const darken=Math.max(.08,1-Math.max(0,zoomP-.72)*3.2);
-  cosmicLayers.base.style.transform=`translate3d(${mx*-1.3}%,${my*-1.1}%,0) scale(${1+slowP*2.8})`;
-  cosmicLayers.particles.style.transform=`translate3d(${mx*7+slowP*1.2}%,${my*4+slowP*2.6}%,110px) scale(${1+slowP*5.6}) rotate(${mx*1.4}deg)`;
-  cosmicLayers.figure.style.transform=`translate3d(${mx*10-slowP*.7}%,${my*6+slowP*4.2}%,170px) scale(${1+slowP*3.25})`;
   cosmicLayers.base.style.filter=`contrast(${1.06+zoomP*.35}) brightness(${darken}) saturate(${1-zoomP*.28})`;
   cosmicLayers.particles.style.filter=`contrast(${1.05+zoomP*.55}) brightness(${darken}) saturate(${.88-zoomP*.18})`;
   cosmicLayers.figure.style.filter=`contrast(${1.18+zoomP*.42}) brightness(${darken*.9})`;
