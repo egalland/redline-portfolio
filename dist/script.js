@@ -123,27 +123,20 @@ const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
 }),{threshold:.18});
 document.querySelectorAll('.project,.statement,.manifesto-meta').forEach(el=>observer.observe(el));
 
-const filmCut=document.querySelector('.film-cut');
-const filmCutLabel=filmCut.querySelector('b');
-const filmCutCode=filmCut.querySelector('span');
-let lastCutTarget=null,lastCutAt=0,cutFrame=0;
-function fireFilmCut(target){
-  const now=performance.now();if(target===lastCutTarget||now-lastCutAt<520)return;
-  lastCutTarget=target;lastCutAt=now;cutFrame++;
-  const names=['SIGNAL','MANIFESTE','FRAGMENT 01','FRAGMENT 02','FRAGMENT 03','ORIGIN','CONTACT'];
+let lastArrivalTarget=null,lastArrivalAt=0;
+function fireSceneArrival(target){
+  const now=performance.now();if(target===lastArrivalTarget||now-lastArrivalAt<520)return;
+  lastArrivalTarget=target;lastArrivalAt=now;
   const messages=['A GOOSE HAS ENTERED YOUR SYSTEM.','REALITY FILE IS CORRUPTED.','FRAGMENT 01 COPIED TO MEMORY.','FRAGMENT 02 REFUSES TO QUIT.','FRAGMENT 03 IS DREAMING.','THE ORIGIN HAS NO DESKTOP.','IT IS NOW SAFE TO WAKE UP.'];
   const targets=[document.querySelector('.hero'),document.querySelector('.manifesto'),...document.querySelectorAll('.project'),document.querySelector('.deepzoom'),document.querySelector('.contact')];
   const index=Math.max(0,targets.indexOf(target));
-  filmCutLabel.textContent=`SCENE ${String(index).padStart(2,'0')} · ${names[index]}`;
   retroMessage.textContent=messages[index];
-  filmCutCode.textContent=`00:00:${String(cutFrame*3).padStart(2,'0')}:${String((cutFrame*7)%24).padStart(2,'0')}`;
   const arrivalTarget=target.classList.contains('deepzoom')?target.querySelector('.deepzoom-sticky'):target;
-  filmCut.classList.remove('fire');arrivalTarget.classList.remove('video-arrive');void filmCut.offsetWidth;
-  filmCut.classList.add('fire');arrivalTarget.classList.add('video-arrive');
-  setTimeout(()=>filmCut.classList.remove('fire'),880);
+  arrivalTarget.classList.remove('video-arrive');void arrivalTarget.offsetWidth;
+  arrivalTarget.classList.add('video-arrive');
 }
-const cutObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)fireFilmCut(entry.target)}),{threshold:.16});
-document.querySelectorAll('.hero,.manifesto,.project,.deepzoom,.contact').forEach(el=>cutObserver.observe(el));
+const arrivalObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting)fireSceneArrival(entry.target)}),{threshold:.16});
+document.querySelectorAll('.hero,.manifesto,.project,.deepzoom,.contact').forEach(el=>arrivalObserver.observe(el));
 
 const gooseGuide = document.querySelector('.goose-guide');
 const guideLabel = document.querySelector('.guide-data span');
