@@ -2,14 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#090909">
   <title>REDLINE — Portfolio concept</title>
   <meta name="description" content="Prototype de portfolio brutaliste et expérimental, noir et rouge.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=mobile-20261022">
 </head>
 <body>
   <canvas id="signal" aria-hidden="true"></canvas>
@@ -31,10 +31,12 @@
 
   <header class="topbar">
     <a class="mark" href="#top">R/01</a>
+    <a class="mobile-project-link" href="#projects">PROJETS ↓</a>
     <div class="status"><span></span> SIGNAL ACTIF</div>
     <a href="mailto:hello@example.com">CONTACT ↗</a>
   </header>
 
+  <button class="motion-toggle" type="button" aria-pressed="false" aria-label="Réduire les animations">ANIMATIONS · ON</button>
   <main id="top">
     <section class="hero panel" data-index="00">
       <p class="eyebrow">DIRECTION ARTISTIQUE · CREATIVE DEVELOPMENT · PARIS</p>
@@ -49,7 +51,7 @@
       <h1 class="glitch" data-text="TON NOM">TON NOM</h1>
       <div class="hero-bottom">
         <p>Je fabrique des identités et des expériences numériques qui refusent de rester immobiles.</p>
-        <p class="scroll-hint">DÉFILER POUR<br>ENTRER DANS LE SIGNAL ↓</p>
+        <a class="scroll-hint" href="#projects">EXPLORER LES PROJETS ↓</a>
       </div>
     </section>
 
@@ -62,7 +64,7 @@
       </div>
     </section>
 
-    <section class="projects panel" data-index="02">
+    <section id="projects" class="projects panel" data-index="02">
       <div class="projects-head">
         <p class="section-label">PROJETS SÉLECTIONNÉS</p>
         <p>2024—2026</p>
@@ -74,7 +76,7 @@
           <h2>NULL<br>OBJECT</h2>
           <p>IDENTITÉ · WEB · MOTION</p>
         </div>
-        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="0"></canvas><span class="scene-label">ORBITAL TYPE FIELD / MOVE + SCROLL</span></div>
+        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="0"></canvas><span class="scene-label">ORBITAL TYPE FIELD / GLISSER + DÉFILER</span></div>
         <div class="project-arrow">↗</div>
       </article>
 
@@ -84,7 +86,7 @@
           <h2>AFTER<br>IMAGE</h2>
           <p>CAMPAGNE · FILM · EXPÉRIENCE</p>
         </div>
-        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="1"></canvas><span class="scene-label">SUPPLY NETWORK / MOVE + SCROLL</span></div>
+        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="1"></canvas><span class="scene-label">SUPPLY NETWORK / GLISSER + DÉFILER</span></div>
         <div class="project-arrow">↗</div>
       </article>
 
@@ -94,7 +96,7 @@
           <h2>RAW<br>SIGNAL</h2>
           <p>ART DIRECTION · WEBGL</p>
         </div>
-        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="2"></canvas><span class="scene-label">GENERATIVE WAVE / MOVE + SCROLL</span></div>
+        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="2"></canvas><span class="scene-label">GENERATIVE WAVE / GLISSER + DÉFILER</span></div>
         <div class="project-arrow">↗</div>
       </article>
     </section>
@@ -119,11 +121,12 @@
           <strong>LOOK<br>CLOSER.</strong>
           <p>Chaque idée contient un autre monde.<br>Le mouvement révèle ce que l’image cachait.</p>
         </div>
+        <a class="zoom-skip" href="#contact">PASSER LA SÉQUENCE ↓</a>
         <div class="portrait-note">PORTRAIT FINAL · EN ATTENTE</div>
       </div>
     </section>
 
-    <section class="contact panel" data-index="04">
+    <section id="contact" class="contact panel" data-index="04">
       <p class="section-label">FIN DE TRANSMISSION</p>
       <a class="contact-link" href="mailto:hello@example.com">PARLONS<span>↗</span></a>
       <div class="contact-bottom">
@@ -133,6 +136,6 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=mobile-20261022"></script>
 </body>
 </html>

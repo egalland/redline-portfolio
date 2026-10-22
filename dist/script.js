@@ -1,3 +1,15 @@
+const mobileLayout = matchMedia('(max-width:760px)');
+const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
+const motionToggle = document.querySelector('.motion-toggle');
+let motionPaused = reducedMotion.matches;
+let lastFrame = 0, frameId = 0;
+function syncMotionMode(){
+  document.documentElement.classList.toggle('motion-paused', motionPaused);
+  motionToggle.setAttribute('aria-pressed', String(motionPaused));
+  motionToggle.setAttribute('aria-label', motionPaused ? 'Activer les animations' : 'Réduire les animations');
+  motionToggle.textContent = motionPaused ? 'ANIMATIONS · OFF' : 'ANIMATIONS · ON';
+}
+syncMotionMode();
 const canvas = document.querySelector('#signal');
 const ctx = canvas.getContext('2d');
 const motionCanvas = document.querySelector('#motion-field');
@@ -12,7 +24,7 @@ let scrollVelocity = 0, lastScrollY = scrollY, gooseX = innerWidth * .06, gooseY
 let previousGooseX = gooseX, previousGooseY = gooseY, lastTrailTick = 0;
 let goosePose = {x:5,y:74,s:.58,r:-8};
 const gooseTrail = [];
-const motionMotes = Array.from({length:110},(_,i)=>({
+const motionMotes = Array.from({length:mobileLayout.matches ? 42 : 110},(_,i)=>({
   x:(Math.sin(i*73.17)*.5+.5), y:(Math.sin(i*41.63+1.7)*.5+.5),
   z:.12+(i%13)/13, s:.35+(i%5)*.33, drift:.15+(i%7)*.055
 }));
@@ -58,14 +70,14 @@ function animateIdleScene(time){
   const breathe=Math.sin(time*.008), drift=Math.cos(time*.0045);
   const pointerX=mouse.x/innerWidth-.5,pointerY=mouse.y/innerHeight-.5;
   retroMac.style.transform=`translate3d(${pointerX*13+breathe*5}px,${pointerY*9+drift*7}px,0) rotate(${breathe*.65}deg)`;
-  kineticText.forEach((el,i)=>{
+  if (!mobileLayout.matches && !motionPaused) kineticText.forEach((el,i)=>{
     const r=el.getBoundingClientRect();if(r.bottom<0||r.top>h)return;
     const screen=(r.top+r.height*.5-h*.5)/h;
     const x=Math.sin(time*.006+i*1.71)*(2.5+i%3*1.7)+pointerX*(i%2?3:-3);
     const y=-screen*(5+i%4*2.2)+Math.cos(time*.0045+i)*3.5;
     el.style.translate=`${x.toFixed(2)}px ${y.toFixed(2)}px`;
   });
-  kineticBlocks.forEach((el,i)=>{
+  if (!mobileLayout.matches && !motionPaused) kineticBlocks.forEach((el,i)=>{
     const r=el.getBoundingClientRect();if(r.bottom<0||r.top>h)return;
     const screen=(r.top+r.height*.5-h*.5)/h;
     el.style.translate=`${(Math.sin(time*.0038+i*2.1)*5+pointerX*4).toFixed(2)}px ${(-screen*(8+i%3*3)+Math.cos(time*.0032+i)*5).toFixed(2)}px`;
@@ -78,7 +90,9 @@ function animateIdleScene(time){
   cosmicLayers.figure.style.transform=`translate3d(${mx*10-slowP*.7+breathe*.24}%,${my*6+slowP*4.2+drift*.18}%,170px) scale(${1+slowP*3.25+breathe*.006})`;
 }
 
-function draw(){
+function draw(now = 0){
+  if (!motionPaused && mobileLayout.matches && now-lastFrame < 32) { frameId=requestAnimationFrame(draw); return; }
+  lastFrame=now;
   ctx.clearRect(0,0,w,h);
   const page = scrollY / Math.max(1, document.body.scrollHeight - h);
   const yBase = h * (.46 + Math.sin(t * .005) * .04);
@@ -100,8 +114,7 @@ function draw(){
   drawCosmicParticles(t);
   drawMotionField(t);
   animateIdleScene(t);
-  t++;
-  requestAnimationFrame(draw);
+  if (!motionPaused) { t++; frameId=requestAnimationFrame(draw); }
 }
 
 addEventListener('resize', resize);
@@ -113,10 +126,10 @@ document.querySelectorAll('a,.project').forEach(el=>{
   el.addEventListener('mouseenter',()=>cursor.classList.add('hot'));
   el.addEventListener('mouseleave',()=>cursor.classList.remove('hot'));
 });
-setInterval(()=>{ glitch.classList.add('active'); setTimeout(()=>glitch.classList.remove('active'),110); }, 1700);
+setInterval(()=>{ if(motionPaused || mobileLayout.matches)return; glitch.classList.add('active'); setTimeout(()=>glitch.classList.remove('active'),110); }, 1700);
 
 const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
-  if(entry.isIntersecting) entry.target.animate([
+  if(entry.isIntersecting && !motionPaused) entry.target.animate([
     {opacity:.15,transform:'translateY(55px)',filter:'blur(10px)'},
     {opacity:1,transform:'translateY(0)',filter:'blur(0)'}
   ],{duration:750,easing:'cubic-bezier(.16,1,.3,1)',fill:'both'});
@@ -125,6 +138,7 @@ document.querySelectorAll('.project,.statement,.manifesto-meta').forEach(el=>obs
 
 let lastArrivalTarget=null,lastArrivalAt=0;
 function fireSceneArrival(target){
+  if(motionPaused || mobileLayout.matches)return;
   const now=performance.now();if(target===lastArrivalTarget||now-lastArrivalAt<520)return;
   lastArrivalTarget=target;lastArrivalAt=now;
   const messages=['A GOOSE HAS ENTERED YOUR SYSTEM.','REALITY FILE IS CORRUPTED.','FRAGMENT 01 COPIED TO MEMORY.','FRAGMENT 02 REFUSES TO QUIT.','FRAGMENT 03 IS DREAMING.','THE ORIGIN HAS NO DESKTOP.','IT IS NOW SAFE TO WAKE UP.'];
@@ -161,7 +175,7 @@ function gooseRoute(){
   const projects=[...document.querySelectorAll('.project')];
   const contact=document.querySelector('.contact');
   const max=Math.max(1,document.body.scrollHeight-innerHeight);
-  const at=el=>Math.max(0,Math.min(1,(el.offsetTop-innerHeight*.42)/max));
+  const at=el=>Math.max(0,Math.min(1,(el.getBoundingClientRect().top+scrollY-innerHeight*.42)/max));
   const deepStart=at(deepzoom), deepSpan=Math.max(.01,(deepzoom.offsetHeight-innerHeight)/max);
   return [
     {p:0,x:5,y:74,s:.58,r:-8,o:.15,label:'SIGNAL DÉTECTÉ',mode:'scan'},
@@ -188,8 +202,8 @@ function animatePage(){
   const routeT=smoothstep((globalP-a.p)/Math.max(.0001,b.p-a.p));
   const guideX=a.x+(b.x-a.x)*routeT, guideY=a.y+(b.y-a.y)*routeT;
   const guideScale=a.s+(b.s-a.s)*routeT, guideRotate=a.r+(b.r-a.r)*routeT;
-  goosePose={x:guideX,y:guideY,s:guideScale,r:guideRotate};
-  gooseGuide.style.opacity = a.o+(b.o-a.o)*routeT;
+  goosePose={x:mobileLayout.matches ? Math.min(guideX, 100-720/innerWidth) : guideX,y:guideY,s:guideScale,r:guideRotate};
+  gooseGuide.style.opacity = mobileLayout.matches && globalP < .05 ? .6 : a.o+(b.o-a.o)*routeT;
   gooseGuide.dataset.story=routeT>.55?b.mode:a.mode;
   gooseGuide.style.setProperty('--goose-flip',b.x<a.x?'-1':'1');
   gooseGuide.style.setProperty('--guide-progress',`${Math.round(globalP*100)}%`);
@@ -218,7 +232,7 @@ function animatePage(){
   deepzoom.style.setProperty('--copy-scale', `${.82 + Math.max(0,(zoomP-.78)*.82)}`);
   deepzoom.style.setProperty('--portrait-note', `${zoomP < .22 ? .55 : Math.max(0,.55-zoomP)}`);
 }
-addEventListener('scroll', animatePage, {passive:true});
+addEventListener('scroll', () => { animatePage(); if(motionPaused) draw(); }, {passive:true});
 
 const sceneCanvases=[...document.querySelectorAll('.project-canvas')];
 function projectPoint(x,y,z,rx,ry,cx,cy,scale){
@@ -273,7 +287,7 @@ function drawProjectScenes(time){
   });
 }
 
-const cosmicDots=Array.from({length:180},(_,i)=>({x:(Math.sin(i*91.17)*.5+.5),y:(Math.sin(i*47.41+2)*.5+.5),z:(i%17)/17,s:1+(i%5)}));
+const cosmicDots=Array.from({length:mobileLayout.matches ? 70 : 180},(_,i)=>({x:(Math.sin(i*91.17)*.5+.5),y:(Math.sin(i*47.41+2)*.5+.5),z:(i%17)/17,s:1+(i%5)}));
 function drawCosmicParticles(time){
   const r=cosmicCanvas.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;
   const d=Math.min(devicePixelRatio||1,2);if(cosmicCanvas.width!==Math.round(r.width*d)||cosmicCanvas.height!==Math.round(r.height*d)){cosmicCanvas.width=Math.round(r.width*d);cosmicCanvas.height=Math.round(r.height*d)}
@@ -287,5 +301,16 @@ function drawCosmicParticles(time){
   });
 }
 
+motionToggle.addEventListener('click',()=>{
+  motionPaused=!motionPaused;
+  syncMotionMode();
+  document.getAnimations().forEach(animation=>animation.cancel());
+  cancelAnimationFrame(frameId);
+  animatePage(); draw();
+});
+reducedMotion.addEventListener('change',e=>{
+  motionPaused=e.matches; syncMotionMode(); cancelAnimationFrame(frameId); animatePage(); draw();
+});
+addEventListener('resize',()=>{ animatePage(); if(motionPaused)draw(); });
 animatePage();
 resize(); draw();
