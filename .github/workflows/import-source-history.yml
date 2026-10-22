@@ -1,0 +1,51 @@
+name: Importer l'historique REDLINE
+on:
+  push:
+    paths:
+      - .github/workflows/import-source-history.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Importer les commits originaux sans remplacer main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        shell: python
+        run: |
+          import base64, os, pathlib, subprocess
+          def git(*args):
+              return subprocess.check_output(["git", *args], text=True).strip()
+          git("clone", "https://github.com/" + os.environ["REPOSITORY"] + ".git", "repo")
+          os.chdir("repo")
+          if not pathlib.Path("redline-history.bundle").exists():
+              print("Historique deja importe.")
+              raise SystemExit(0)
+          git("bundle", "verify", "redline-history.bundle")
+          git("fetch", "./redline-history.bundle", "main:refs/remotes/source/main")
+          source = git("rev-parse", "refs/remotes/source/main")
+          if source != "3bbf535eec52f2c831041796f2ebf1d23628ad7e":
+              raise RuntimeError("Historique source inattendu")
+          git("config", "user.name", "egalland")
+          git("config", "user.email", "31864638+egalland@users.noreply.github.com")
+          git("merge", "--no-ff", "--allow-unrelated-histories", "refs/remotes/source/main", "-m", "Importer les 15 commits originaux de REDLINE")
+          readme = pathlib.Path("README.md")
+          text = readme.read_text()
+          text = text[:text.index("## Historique source")] + """## Historique source
+
+          Les 15 commits originaux du site sont importes dans la branche main avec leurs dates, auteurs et fichiers. Le commit de publication GitHub est egalement conserve.
+
+          Le dossier dist/ contient les sources utilisees par l'hebergement ChatGPT. Les fichiers a la racine correspondent a l'instantane publie lors de l'import.
+          """
+          readme.write_text(text)
+          git("rm", "redline-history.bundle")
+          git("add", "README.md")
+          git("commit", "-m", "Documenter l'historique importe et retirer l'archive de transfert")
+          env = os.environ.copy()
+          auth = base64.b64encode(("x-access-token:" + env["GH_TOKEN"]).encode()).decode()
+          env["REDLINE_GIT_AUTH"] = "Authorization: Basic " + auth
+          subprocess.run(["git", "--config-env=http.https://github.com/.extraheader=REDLINE_GIT_AUTH", "push", "origin", "HEAD:main"], env=env, check=True)
+          print("Historique importe. Total de commits :", git("rev-list", "--count", "HEAD"))
