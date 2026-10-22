@@ -84,10 +84,12 @@ function animateIdleScene(time){
   });
   const idleX=Math.sin(time*.006)*.7,idleY=Math.cos(time*.005)*.55,idleR=Math.sin(time*.004)*1.8;
   gooseGuide.style.transform=`translate3d(${goosePose.x+idleX}vw,${goosePose.y+idleY}vh,0) rotate(${goosePose.r+idleR}deg) scale(${goosePose.s*(1+Math.sin(time*.007)*.025)})`;
-  const slowP=Math.pow(zoomProgress,1.55),mx=(mouse.x/innerWidth-.5),my=(mouse.y/innerHeight-.5);
-  cosmicLayers.base.style.transform=`translate3d(${mx*-1.3+drift*.18}%,${my*-1.1+breathe*.16}%,0) scale(${1+slowP*2.8+breathe*.004})`;
-  cosmicLayers.particles.style.transform=`translate3d(${mx*7+slowP*1.2+breathe*.7}%,${my*4+slowP*2.6+drift*.55}%,110px) scale(${1+slowP*5.6+breathe*.012}) rotate(${mx*1.4+drift*.3}deg)`;
-  cosmicLayers.figure.style.transform=`translate3d(${mx*10-slowP*.7+breathe*.24}%,${my*6+slowP*4.2+drift*.18}%,170px) scale(${1+slowP*3.25+breathe*.006})`;
+  // One camera preserves registration between the three source images.
+  const cameraP = motionPaused ? 0 : smoothstep(zoomProgress);
+  const cameraScale = 1 + cameraP * (mobileLayout.matches ? 2.6 : 3.8);
+  const scene = document.querySelector('.cosmic-layers');
+  scene.style.transform = `scale(${cameraScale})`;
+
 }
 
 function draw(now = 0){
@@ -145,7 +147,8 @@ function fireSceneArrival(target){
   const targets=[document.querySelector('.hero'),document.querySelector('.manifesto'),...document.querySelectorAll('.project'),document.querySelector('.deepzoom'),document.querySelector('.contact')];
   const index=Math.max(0,targets.indexOf(target));
   retroMessage.textContent=messages[index];
-  const arrivalTarget=target.classList.contains('deepzoom')?target.querySelector('.deepzoom-sticky'):target;
+  if(target.classList.contains('deepzoom'))return;
+  const arrivalTarget=target;
   arrivalTarget.classList.remove('video-arrive');void arrivalTarget.offsetWidth;
   arrivalTarget.classList.add('video-arrive');
 }
@@ -216,21 +219,15 @@ function animatePage(){
   }
 
   const zoomRect = deepzoom.getBoundingClientRect();
-  const zoomP = Math.max(0, Math.min(1, -zoomRect.top / Math.max(1, zoomRect.height - innerHeight)));
+  const zoomHeight = document.querySelector('.deepzoom-sticky').getBoundingClientRect().height;
+  const zoomP = Math.max(0, Math.min(1, -zoomRect.top / Math.max(1, zoomRect.height - zoomHeight)));
   zoomProgress = zoomP;
-  const slowP = Math.pow(zoomP, 1.55);
-  const imageScale = 1 + slowP * 6.2;
-  const mx=(mouse.x/innerWidth-.5), my=(mouse.y/innerHeight-.5);
-  const darken=Math.max(.08,1-Math.max(0,zoomP-.72)*3.2);
-  cosmicLayers.base.style.filter=`contrast(${1.06+zoomP*.35}) brightness(${darken}) saturate(${1-zoomP*.28})`;
-  cosmicLayers.particles.style.filter=`contrast(${1.05+zoomP*.55}) brightness(${darken}) saturate(${.88-zoomP*.18})`;
-  cosmicLayers.figure.style.filter=`contrast(${1.18+zoomP*.42}) brightness(${darken*.9})`;
-  zoomHud.textContent = imageScale.toFixed(2);
-  deepzoom.style.setProperty('--blast-scale', `${.1 + Math.pow(zoomP,3) * 26}`);
-  deepzoom.style.setProperty('--blast-opacity', `${Math.max(0,Math.min(.9,(zoomP-.38)*2.2)) * (1-Math.max(0,(zoomP-.82)*5))}`);
-  deepzoom.style.setProperty('--zoom-copy', `${Math.max(0,Math.min(1,(zoomP-.78)*5))}`);
-  deepzoom.style.setProperty('--copy-scale', `${.82 + Math.max(0,(zoomP-.78)*.82)}`);
-  deepzoom.style.setProperty('--portrait-note', `${zoomP < .22 ? .55 : Math.max(0,.55-zoomP)}`);
+  const imageScale = 1 + smoothstep(zoomP) * (mobileLayout.matches ? 2.6 : 3.8);
+  zoomHud.textContent = (motionPaused ? 1 : imageScale).toFixed(2);
+  deepzoom.style.setProperty('--zoom-copy', motionPaused ? '1' : `${smoothstep((zoomP-.78)/.22)}`);
+  deepzoom.style.setProperty('--copy-scale', '1');
+  deepzoom.style.setProperty('--portrait-note', `${1-smoothstep(zoomP/.2)}`);
+
 }
 addEventListener('scroll', () => { animatePage(); if(motionPaused) draw(); }, {passive:true});
 

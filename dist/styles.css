@@ -246,3 +246,32 @@ html.motion-paused .goose-guide { opacity:.4!important; }
   html:not(.motion-enabled) .deepzoom { min-height:100svh; }
   html:not(.motion-enabled) .zoom-copy { opacity:1; transform:none; }
 }
+
+/* The final scene uses a shared camera aimed at the portrait. */
+.cosmic-layers { perspective:none; overflow:visible; transform-origin:50% 0%; will-change:transform; }
+.cosmic-layer { inset:0; width:100%; height:100%; transform:none; object-position:50% 50%; }
+.layer-base { filter:contrast(1.06) brightness(.95); }
+.layer-figure { filter:contrast(1.08) brightness(1); }
+.zoom-blast,.portrait-note { display:none; }
+.zoom-grain { opacity:.055; animation:none; }
+.zoom-copy { justify-content:flex-end; padding:0 24px 100px; pointer-events:none; }
+.zoom-copy::before { inset:35% 0 0; background:linear-gradient(transparent,rgba(0,0,0,.85)); }
+.zoom-copy strong { font-size:clamp(48px,8vw,110px); margin:14px 0; }
+.zoom-copy p { margin:0; }
+.deepzoom { min-height:400svh; }
+.deepzoom-sticky { height:100svh; }
+@media (max-width:760px) {
+  .deepzoom { min-height:320svh; }
+  .zoom-copy { padding:0 20px 164px; }
+  .zoom-copy strong { font-size:15vw; line-height:.85; }
+  .zoom-copy p { max-width:30ch; font-size:11px; }
+  .zoom-copy small { font-size:8px; }
+  .zoom-hud { top:calc(88px + env(safe-area-inset-top)); }
+}
+html.motion-paused .cosmic-layers { transform:none!important; }
+html.motion-paused .deepzoom { min-height:100svh; }
+/* Avoid creating a non-scrolling ancestor that disables position:sticky. */
+body { overflow-x:clip; }
+@media (max-width:760px) {
+  .cosmic-layers { top:64px; }
+}
