@@ -12,14 +12,6 @@ Cette version reste un prototype visuel : noms de projets, identité et adresse 
 
 ## Historique source
 
-`redline-history.bundle` conserve les **15 commits originaux** du dépôt source, dont les corrections mobile et zoom, avec leurs dates, auteurs et fichiers. L'absence d'authentification Git dans l'environnement a empêché le push direct ; les fichiers visibles ici sont un instantané de la version publiée.
+Les 15 commits originaux du site sont importes dans la branche main avec leurs dates, auteurs et fichiers. Le commit de publication GitHub est egalement conserve.
 
-Pour ouvrir l'historique complet localement :
-
-```sh
-git clone redline-history.bundle redline-source
-cd redline-source
-git log --oneline
-```
-
-Les fichiers sont dans `dist/` dans l'historique d'origine. Dans cet instantané GitHub, ils sont à la racine pour faciliter la consultation.
+Le dossier dist/ contient les sources utilisees par l'hebergement ChatGPT. Les fichiers a la racine correspondent a l'instantane publie lors de l'import.
