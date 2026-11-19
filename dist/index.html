@@ -1,141 +1,39 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#090909">
-  <title>REDLINE — Portfolio concept</title>
-  <meta name="description" content="Prototype de portfolio brutaliste et expérimental, noir et rouge.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=zoom-20261022">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b0f">
+  <title>Emmanuel Galland — Les idées prennent forme</title>
+  <meta name="description" content="Une exploration du développement créatif par Emmanuel Galland. Kikalmo, Market Plus, outils maison et BodyOS prennent forme dans un ballet de points en 3D.">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=formations-2">
 </head>
 <body>
-  <canvas id="signal" aria-hidden="true"></canvas>
-  <canvas id="motion-field" aria-hidden="true"></canvas>
-  <div class="vapor-layer" aria-hidden="true">
-    <div class="vapor-sun"></div><div class="vapor-grid"></div>
-    <span>MEMORY PALACE · 1989/∞</span>
-  </div>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="cursor" aria-hidden="true"></div>
-  <div class="goose-guide" aria-hidden="true">
-    <div class="guide-trail"></div>
-    <div class="guide-orbit orbit-one"></div>
-    <div class="guide-orbit orbit-two"></div>
-    <div class="guide-pulse"></div>
-    <div class="guide-sprite"></div>
-    <div class="guide-data"><span>SUBJECT 01 · FOLLOW</span><b>00%</b><i></i></div>
-  </div>
-
-  <header class="topbar">
-    <a class="mark" href="#top">R/01</a>
-    <a class="mobile-project-link" href="#projects">PROJETS ↓</a>
-    <div class="status"><span></span> SIGNAL ACTIF</div>
-    <a href="mailto:hello@example.com">CONTACT ↗</a>
-  </header>
-
-  <button class="motion-toggle" type="button" aria-pressed="false" aria-label="Réduire les animations">ANIMATIONS · ON</button>
-  <main id="top">
-    <section class="hero panel" data-index="00">
-      <p class="eyebrow">DIRECTION ARTISTIQUE · CREATIVE DEVELOPMENT · PARIS</p>
-      <div class="retro-mac" aria-hidden="true">
-        <div class="mac-bar"><i></i><b>TRANSMISSION</b><i></i></div>
-        <div class="mac-body">
-          <div class="mac-icon">!</div>
-          <p class="mac-message">A GOOSE HAS ENTERED YOUR SYSTEM.</p>
-          <div class="mac-buttons"><span>IGNORE</span><strong>CONTINUE</strong></div>
-        </div>
-      </div>
-      <h1 class="glitch" data-text="TON NOM">TON NOM</h1>
-      <div class="hero-bottom">
-        <p>Je fabrique des identités et des expériences numériques qui refusent de rester immobiles.</p>
-        <a class="scroll-hint" href="#projects">EXPLORER LES PROJETS ↓</a>
-      </div>
-    </section>
-
-    <section class="manifesto panel" data-index="01">
-      <p class="section-label">MANIFESTE</p>
-      <p class="statement reveal">PAS UN SITE.<br><span>UNE TRANSMISSION.</span></p>
-      <div class="manifesto-meta">
-        <p>Une sélection courte. Trois projets. Zéro remplissage.</p>
-        <p>Design, code, mouvement — réunis dans une même tension visuelle.</p>
-      </div>
-    </section>
-
-    <section id="projects" class="projects panel" data-index="02">
-      <div class="projects-head">
-        <p class="section-label">PROJETS SÉLECTIONNÉS</p>
-        <p>2024—2026</p>
-      </div>
-
-      <article class="project" data-color="#ff2436">
-        <div class="project-no">01</div>
-        <div>
-          <h2>NULL<br>OBJECT</h2>
-          <p>IDENTITÉ · WEB · MOTION</p>
-        </div>
-        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="0"></canvas><span class="scene-label">ORBITAL TYPE FIELD / GLISSER + DÉFILER</span></div>
-        <div class="project-arrow">↗</div>
-      </article>
-
-      <article class="project" data-color="#ef3c16">
-        <div class="project-no">02</div>
-        <div>
-          <h2>AFTER<br>IMAGE</h2>
-          <p>CAMPAGNE · FILM · EXPÉRIENCE</p>
-        </div>
-        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="1"></canvas><span class="scene-label">SUPPLY NETWORK / GLISSER + DÉFILER</span></div>
-        <div class="project-arrow">↗</div>
-      </article>
-
-      <article class="project" data-color="#ff003c">
-        <div class="project-no">03</div>
-        <div>
-          <h2>RAW<br>SIGNAL</h2>
-          <p>ART DIRECTION · WEBGL</p>
-        </div>
-        <div class="project-art scene-shell"><canvas class="project-canvas" data-scene="2"></canvas><span class="scene-label">GENERATIVE WAVE / GLISSER + DÉFILER</span></div>
-        <div class="project-arrow">↗</div>
-      </article>
-    </section>
-
-    <section id="final" class="deepzoom" data-index="03" aria-label="Séquence finale en zoom progressif">
-      <div class="deepzoom-sticky">
-        <div class="cosmic-layers" aria-hidden="true">
-          <img class="cosmic-layer layer-base" src="final-bg-v2.png" alt="">
-          <img class="cosmic-layer layer-particles" src="final-particles-v2.png" alt="">
-          <img class="cosmic-layer layer-figure" src="final-fireman-v3.png" alt="">
-          <canvas class="cosmic-particles"></canvas>
-        </div>
-        <p class="sr-only">Géant spectral en smoking dans une architecture cosmique sous un nuage de particules dorées.</p>
-        <div class="zoom-blast" aria-hidden="true"></div>
-        <div class="zoom-grain" aria-hidden="true"></div>
-        <div class="zoom-hud" aria-hidden="true">
-          <span>ORIGIN / FRAME 0001</span>
-          <span>MAGNIFICATION <b>1.00</b>×</span>
-        </div>
-        <div class="zoom-copy">
-          <small>DESCEND INTO THE IMAGE</small>
-          <strong>LOOK<br>CLOSER.</strong>
-          <p>Chaque idée contient un autre monde.<br>Le mouvement révèle ce que l’image cachait.</p>
-        </div>
-        <a class="zoom-skip" href="#contact">PASSER LA SÉQUENCE ↓</a>
-        <div class="portrait-note">PORTRAIT FINAL · EN ATTENTE</div>
-      </div>
-    </section>
-
-    <section id="contact" class="contact panel" data-index="04">
-      <p class="section-label">FIN DE TRANSMISSION</p>
-      <a class="contact-link" href="mailto:hello@example.com">PARLONS<span>↗</span></a>
-      <div class="contact-bottom">
-        <p>DISPONIBLE POUR COLLABORATIONS<br>ET PROJETS SÉLECTIFS</p>
-        <p>PARIS / REMOTE<br>2026</p>
-      </div>
-    </section>
+  <a class="skip" href="#controls">Aller aux commandes du parcours</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <canvas id="swarm" aria-hidden="true"></canvas><canvas id="compatible" aria-hidden="true" hidden></canvas>
+  <div class="crosshair ch-one" aria-hidden="true"></div><div class="crosshair ch-two" aria-hidden="true"></div>
+  <header class="masthead"><a class="wordmark" href="#origine" aria-label="Emmanuel Galland, début du parcours"><span class="brand-symbol" aria-hidden="true">e<span>g</span></span><span>EMMANUEL<br>GALLAND</span></a><span class="header-caption">DÉVELOPPEMENT CRÉATIF<br><span>LES IDÉES PRENNENT FORME</span></span><nav aria-label="Navigation principale"><a href="#jeu">LES PROJETS <span>↗</span></a><a href="#gestes">LES GESTES <span>↗</span></a><a href="https://github.com/egalland" target="_blank" rel="noopener noreferrer" aria-label="GitHub d’Emmanuel Galland, nouvel onglet">GITHUB <span>↗</span></a></nav></header>
+  <div class="film-label" aria-hidden="true"><span class="live-dot"></span><span id="formation-label">FORMATION 01 / 07</span><span class="fine-line"></span><span id="point-count">POINTS EN MOUVEMENT</span></div>
+  <main id="journey">
+    <div class="narrative">
+      <article class="story is-active" data-story="0" aria-labelledby="title-0"><div class="story-inner"><p class="eyebrow">00 — L’INTUITION</p><h1 id="title-0">Tout commence<br>par <em>un point.</em></h1><p class="lead">Une idée encore floue.<br>Et l’envie de lui donner une forme.</p><div class="hero-signature"><span>EMMANUEL GALLAND</span><p>Développeur. Créateur d’outils.<br>Explorateur du vibe coding.</p></div><a class="text-link start-link" href="#jeu">SUIVRE LE FIL <span>↓</span></a></div></article>
+      <article class="story" data-story="1" aria-labelledby="title-1" inert><div class="story-inner"><p class="eyebrow">01 — CONNECTER / KIKALMO</p><h2 id="title-1">Quelques lettres.<br><em>Des gens.</em></h2><p class="lead">Un jeu de mots sans voyelles.<br>Une interface qui donne envie de rester.</p><div class="capabilities"><span>INTERFACES INTERACTIVES</span><span>LOGIQUE DE JEU</span><span>MULTIJOUEUR</span></div><div class="project-note"><span>PROJET / KIKALMO</span><p>Du premier indice à la prochaine manche :<br>penser les règles, le rythme et les interactions.</p></div><div class="links"><a class="text-link" href="https://egalland.github.io/kikalmo/" target="_blank" rel="noopener noreferrer">JOUER <span>↗</span></a><a class="quiet-link" href="https://github.com/egalland/kikalmo" target="_blank" rel="noopener noreferrer">LE CODE ↗</a></div></div></article>
+      <article class="story" data-story="2" aria-labelledby="title-2" inert><div class="story-inner"><p class="eyebrow">02 — CLARIFIER / MARKET PLUS</p><h2 id="title-2">Relier les données.<br><em>Éclairer l’action.</em></h2><p class="lead">Des indicateurs et des informations dispersés.<br>Un même espace pour préparer le point marché.</p><div class="capabilities"><span>OUTILS MÉTIERS</span><span>DONNÉES & IMPORTS</span><span>INTERFACE MODULAIRE</span></div><div class="project-note"><span>PROJET / MARKET PLUS</span><p>Rassembler, organiser et présenter l’information.<br>Partir des usages pour construire un outil quotidien.</p></div><div class="links"><span class="text-link">OUTIL INTERNE</span></div></div></article>
+      <article class="story" data-story="3" aria-labelledby="title-3" inert><div class="story-inner"><p class="eyebrow">03 — PROJETER / LES OUTILS MAISON</p><h2 id="title-3">Imaginer l’espace.<br><em>Voir les connexions.</em></h2><p class="lead">Du dessin de la pièce au tableau électrique.<br>Rendre un projet concret avant de le réaliser.</p><div class="capabilities"><span>MODÉLISATION 2D / 3D</span><span>MESURES & MÉTRÉS</span><span>ÉDITION INTERACTIVE</span></div><div class="project-note"><span>PROJETS / ATELIER RÉNOVATION + TABLEAU 3D</span><p>Plans, aménagements et quantités d’un côté.<br>Composants et liaisons pédagogiques de l’autre.</p></div><div class="links house-links"><a class="text-link" href="https://configurateur-cuisine-emmanuel.emmanuel-galland117.chatgpt.site" target="_blank" rel="noopener noreferrer">DESSINER UN PLAN <span>↗</span></a><a class="text-link" href="https://egalland.github.io/elec/" target="_blank" rel="noopener noreferrer">TABLEAU 3D <span>↗</span></a></div></div></article>
+      <article class="story" data-story="4" aria-labelledby="title-4" inert><div class="story-inner"><p class="eyebrow">04 — OBSERVER / BODYOS</p><h2 id="title-4">Comprendre<br><em>son rythme.</em></h2><p class="lead">Le corps, le sport et les habitudes.<br>Un tableau de bord pour relier le quotidien.</p><div class="capabilities"><span>SUIVI PERSONNEL</span><span>VISUALISATION</span><span>EXPÉRIENCE UTILISATEUR</span></div><div class="project-note"><span>PROJET / BODYOS — SANTÉ & PERFORMANCE</span><p>Donner une vue d’ensemble au suivi personnel.<br>Les points évoquent l’outil, sans donnée de santé réelle.</p></div><div class="links"><span class="text-link">CARNET PERSONNEL</span><span class="access-note">ACCÈS PRIVÉ</span></div></div></article>
+      <article class="story" data-story="5" aria-labelledby="title-5" inert><div class="story-inner"><p class="eyebrow">05 — COMPOSER / LES COMPÉTENCES</p><h2 id="title-5">Penser ensemble.<br><em>Faire juste.</em></h2><p class="lead">L’interface, le système et l’usage.<br>Trois regards sur une même idée.</p><div class="skill-tabs" role="group" aria-label="Explorer une compétence"><button data-skill="0" aria-pressed="true">01 / INTERFACES</button><button data-skill="1" aria-pressed="false">02 / SYSTÈMES</button><button data-skill="2" aria-pressed="false">03 / EXPÉRIMENTATION</button></div><div class="skill-detail" aria-live="polite"><h3 id="skill-title">Rendre l’interaction évidente.</h3><p id="skill-copy">React, JavaScript, TypeScript. Concevoir une interface, organiser ses états et affiner ses interactions.</p></div></div></article>
+      <article class="story" data-story="6" aria-labelledby="title-6" inert><div class="story-inner"><p class="eyebrow">06 — CONTINUER / LA SUITE</p><h2 id="title-6">Les outils changent.<br><em>La curiosité reste.</em></h2><p class="lead">Le développement comme savoir-faire.<br>L’IA comme partenaire d’exploration.<br>L’idée comme point de départ.</p><div class="project-note"><span>EMMANUEL GALLAND</span><p>Je construis des outils, des jeux et des expériences.<br>Et j’apprends en leur donnant vie.</p></div><a class="text-link" href="https://github.com/egalland" target="_blank" rel="noopener noreferrer">CONTINUER SUR GITHUB <span>↗</span></a><a class="replay quiet-link" href="#origine">REVOIR LE PARCOURS ↺</a></div></article>
+    </div>
+    <div class="scroll-track" aria-hidden="true"><section class="scroll-stop" id="origine" data-stop="0"></section><section class="scroll-stop" id="jeu" data-stop="1"></section><section class="scroll-stop" id="market-plus" data-stop="2"></section><section class="scroll-stop" id="maison" data-stop="3"></section><section class="scroll-stop" id="bodyos" data-stop="4"></section><section class="scroll-stop" id="gestes" data-stop="5"></section><section class="scroll-stop" id="suite" data-stop="6"></section></div>
   </main>
-
-  <script src="script.js?v=zoom-20261022"></script>
+  <aside class="scene-caption" aria-hidden="true"><span id="scene-title">L’INTUITION</span><span id="scene-subtitle">LE POSSIBLE, AVANT LA FORME.</span><span class="coordinate">X <b id="coord-x">0.000</b> / Y <b id="coord-y">0.000</b></span></aside>
+  <div class="scene-action"><button id="scatter" type="button" aria-label="Disperser puis reformer les points"><span>✳</span> DISPERSER LES POINTS</button><span>Les formes sont des interprétations des projets.</span></div>
+  <footer id="controls" class="controls"><div class="chapter-controls"><button id="previous" type="button" aria-label="Chapitre précédent">←</button><span id="chapter-count" aria-live="polite">01 <i>/</i> 07</span><button id="next" type="button" aria-label="Chapitre suivant">→</button></div><div class="timeline" role="group" aria-label="Chapitres du parcours"><a href="#origine" aria-label="L’intuition" aria-current="step"><span></span></a><a href="#jeu" aria-label="Kikalmo"><span></span></a><a href="#market-plus" aria-label="Market Plus"><span></span></a><a href="#maison" aria-label="Plans de maison et tableau électrique"><span></span></a><a href="#bodyos" aria-label="BodyOS"><span></span></a><a href="#gestes" aria-label="Compétences"><span></span></a><a href="#suite" aria-label="La suite"><span></span></a><i id="timeline-progress"></i></div><div class="view-controls"><button id="motion" type="button" aria-pressed="false" aria-label="Réduire les animations"><span aria-hidden="true">Ⅱ</span> MOUVEMENT</button><button id="reading" type="button" aria-pressed="false">VUE SIMPLE</button></div></footer>
+  <div id="render-status" role="status" class="render-status" hidden></div>
+  <noscript><style>.story{position:relative!important;opacity:1!important;visibility:visible!important;transform:none!important;min-height:85svh}.narrative{position:relative!important}.scroll-track,.controls,.film-label,.scene-action,.scene-caption{display:none!important}.story-inner{padding:140px 8vw 80px!important}body{overflow:auto!important}</style><p class="no-script">JavaScript est nécessaire pour le ballet de points. Le parcours reste disponible en lecture.</p></noscript>
+  <script src="formations.js?v=2"></script><script src="experience.js?v=2"></script>
 </body>
 </html>

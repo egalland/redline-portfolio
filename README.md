@@ -1,17 +1,25 @@
-# REDLINE — Portfolio expérimental
+# Les idées prennent forme
 
-Portfolio noir et rouge avec une oie animée, trois scènes interactives et un zoom cosmique au défilement. Interface adaptée au mobile et mode de réduction des animations.
+Portfolio immersif d’Emmanuel Galland. Un essaim de points partage sept formations 3D et les transforme à mesure du défilement natif. Quatre univers servent de démonstration : Kikalmo, Market Plus, les outils maison (Atelier Rénovation et Tableau 3D), puis BodyOS.
 
-**Site :** https://redline-portfolio-test.emmanuel-galland117.chatgpt.site
+## Fonctionnement
 
-## Utilisation
+- `dist/formations.js` construit les positions des points : globe orbital, jeu de lettres, tableau de bord modulaire, plan relié à un tableau électrique, anneaux de suivi, interfaces et monogramme.
+- `dist/experience.js` pilote une seule boucle d’animation, le rendu WebGL, le rendu Canvas compatible, les transitions, la souris et les commandes accessibles.
+- `dist/styles.css` définit la composition, le mode mobile, les transitions de texte et la lecture linéaire.
+- Défilement natif, liens d’ancrage, navigation précédent/suivant et clavier (flèches gauche/droite hors des contrôles).
+- Les trois boutons de compétences transforment l’essaim et changent l’explication. « Disperser les points » reforme la figure après une impulsion.
+- La préférence de mouvement est mémorisée localement ; `prefers-reduced-motion` est respecté. La boucle s’arrête lorsque l’onglet est masqué, ainsi qu’en pause après le rendu demandé.
+- Aucune photo, catalogue exhaustif, donnée d’audience ni collecte de données. Les formations sont des interprétations visuelles des projets.
 
-Ouvrir `index.html` dans un navigateur ou servir ce dossier avec un serveur statique. Aucun build ni dépendance à installer. Les polices Google Fonts nécessitent une connexion ; une police de secours est prévue.
+## Déploiement
 
-Cette version reste un prototype visuel : noms de projets, identité et adresse de contact sont des exemples.
+Site statique, sans étape de compilation. Servir `dist/`. Les polices Google Fonts sont facultatives ; des polices système prennent le relais si elles sont indisponibles.
 
-## Historique source
+## Version archivée
 
-Les 15 commits originaux du site sont importes dans la branche main avec leurs dates, auteurs et fichiers. Le commit de publication GitHub est egalement conserve.
+Cette branche présente le prototype à formations de points du 3 novembre 2026 (source `85ca8132869507413f22991817ed4cc8b10dbef1`). La branche principale conserve le prototype à l’oie.
 
-Le dossier dist/ contient les sources utilisees par l'hebergement ChatGPT. Les fichiers a la racine correspondent a l'instantane publie lors de l'import.
+Depuis la racine du dépôt, lancer `python3 -m http.server 8000 --directory dist`, puis ouvrir <http://localhost:8000/>. Les deux modules de rendu, l’icône et la feuille de style sont inclus.
+
+Les scènes Market Plus et BodyOS utilisent des formes abstraites. Leurs services privés ne sont pas liés dans cette édition publique.
